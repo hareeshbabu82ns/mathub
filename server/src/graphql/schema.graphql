@@ -1,0 +1,17 @@
+enum TestType {
+    ARITHMETIC
+}
+type Test @Model( dataSource: "datasource", key: "Tests" ) {
+    id: ID ! @unique
+    type: TestType!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+    questions: Json
+    answers: Json
+}
+
+type TestSetting @Model( dataSource: "datasource", key: "TestSettings" ) {
+    id: ID ! @unique
+    type: TestType!
+    settings: Json
+}
