@@ -85,11 +85,11 @@ const startGraphQLServer = async ( expressApp: Express ) => {
 
 
   // serve UI
-  expressApp.use( express.static( join( __dirname, "../", "client", "build" ) ) );
+  expressApp.use( express.static( process.env.APP_WEB || join( __dirname, "../", "client", "build" ) ) );
 
   // Handles any requests that don't match the ones above
   expressApp.get( "*", ( req, res ) => {
-    res.sendFile( join( __dirname, "../", "client", "build", "index.html" ) );
+    res.sendFile( process.env.APP_WEB ? join( process.env.APP_WEB, "index.html" ) : join( __dirname, "../", "client", "build", "index.html" ) );
   } );
 
   // curl -H "Origin: http://mathub-ui.kube.local.io" --head http://mathub-api.kube.local.io/graphql
