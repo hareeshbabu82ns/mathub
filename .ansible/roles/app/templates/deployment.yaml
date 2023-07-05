@@ -34,8 +34,6 @@ spec:
               value: "{{secret_key}}"
             - name: MONGO_URI
               value: "{{mongo_uri}}"
-            - name: SANSCRIPT_UTILS_URL
-              value: "{{sanscript_utils_url}}"
             - name: DIRECTUS_API_URL
               value: "{{directus_api_url}}"
             - name: DIRECTUS_USER_AUTH_TOKEN
