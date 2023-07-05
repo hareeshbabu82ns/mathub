@@ -32,8 +32,8 @@ spec:
           env:
             - name: SECRET_KEY
               value: "{{secret_key}}"
-            - name: MONGO_URL
-              value: "mongodb://{{mongodb_user}}:{{mongodb_pwd}}@{{mongodb_host}}:{{mongodb_port}}/?authMechanism=DEFAULT&authSource={{mongodb_db}}"
+            - name: MONGO_URI
+              value: "{{mongo_uri}}"
             - name: SANSCRIPT_UTILS_URL
               value: "{{sanscript_utils_url}}"
             - name: DIRECTUS_API_URL

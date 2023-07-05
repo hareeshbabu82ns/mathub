@@ -12,3 +12,7 @@ mongodb_port: "{{vault_mongodb_port}}"
 mongodb_db: "{{vault_mongodb_db}}"
 mongodb_user: "{{vault_mongodb_user}}"
 mongodb_pwd: "{{vault_mongodb_pwd}}"
+
+mongo_db_name: "{{vault_mongodb_db}}"
+
+mongo_uri: "mongodb://{{mongodb_user}}:{{mongodb_pwd}}@{{mongodb_host}}:{{mongodb_port}}/?authMechanism=DEFAULT&authSource={{mongodb_db}}"
