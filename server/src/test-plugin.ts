@@ -1,5 +1,5 @@
 import { Context, ListReadable, MapReadable, Model, Plugin, QueryPlugin } from '@grapi/server'
-import { IObjectTypeResolver, IResolvers } from 'graphql-tools';
+// import { IObjectTypeResolver, IResolvers } from 'graphql-tools';
 
 
 export default class TestQueryPlugin implements Plugin {

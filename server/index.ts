@@ -1,8 +1,7 @@
 import { readFileSync } from 'fs'
-import { resolve } from 'path'
+import { resolve, join } from 'path'
 import { MongodbDataSourceGroup } from '@grapi/mongodb'
 import { Grapi } from '@grapi/server'
-// import { ApolloServer } from 'apollo-server'
 import { ApolloServer } from 'apollo-server-express';
 import {
   ApolloServerPluginLandingPageLocalDefault,
@@ -75,7 +74,7 @@ const startGraphQLServer = async ( expressApp: Express ) => {
   const expressApp = express()
 
   // expressApp.options('*', cors)
-  const allowedOrigins = [ 'http://localhost:3000', 'http://mathub-ui.kube.local.io/' ]
+  const allowedOrigins = [ 'http://localhost:3000', 'http://mathub.kube.terabits.io/' ]
   const options: cors.CorsOptions = {
     origin: allowedOrigins
   }
@@ -85,8 +84,14 @@ const startGraphQLServer = async ( expressApp: Express ) => {
 
 
 
-  // // serve UI
-  // expressApp.use(express.static(path.join(__dirname, '../', 'ui', 'build')))
+  // serve UI
+  expressApp.use( express.static( join( __dirname, "../", "client", "build" ) ) );
+
+  // Handles any requests that don't match the ones above
+  expressApp.get( "*", ( req, res ) => {
+    res.sendFile( join( __dirname, "../", "client", "build", "index.html" ) );
+  } );
+
   // curl -H "Origin: http://mathub-ui.kube.local.io" --head http://mathub-api.kube.local.io/graphql
 
 } )()
