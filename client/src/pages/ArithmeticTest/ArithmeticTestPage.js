@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 
 import QAView from '../../components/QAView';
@@ -12,6 +12,7 @@ import moment from 'moment';
 import { useMutation, gql } from '@apollo/client';
 
 import { remainingDurationFormat } from '../../utils/formatting';
+import { MathUtil } from 'utils/math_utils';
 
 // mutation_root.insert_mathub_test(objects: [mathub_test_insert_input!]!)
 const ADD_TEST = gql`
@@ -51,9 +52,15 @@ const ArithmeticTestPage = () => {
   const [timeLeft] = useCountDownTimer(qSettings.timeLimit * 60);
 
   const [answers, setAnswers] = useState([]);
-  const [questions, setQuestions] = useState(generate(qSettings));
+  // const [questions, setQuestions] = useState(generate(qSettings));
+  const [questions, setQuestions] = useState(null);
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
+
+  useEffect(() => {
+    const q = MathUtil.generateExpressions(qSettings);
+    setQuestions(q);
+  }, [location]);
 
   const onAnswerSubmitted = ({ value }) => {
     const ans = answers[currentQuestion] || {};
@@ -96,19 +103,25 @@ const ArithmeticTestPage = () => {
   );
 
   return (
-    <Panel title={'Arithmetic Test'} toolbarActions={toolbarActions}>
-      <QAView
-        key={currentQuestion}
-        testDone={qSettings.timeLimit > 0 && timeLeft <= 0}
-        timeLimit={qSettings.timeLimitPerQuestion}
-        question={questions[currentQuestion]}
-        currentPosition={currentQuestion + 1}
-        totalQuestions={questions.length}
-        answer={answers.length > currentQuestion ? answers[currentQuestion] : {}}
-        onSubmit={onAnswerSubmitted}
-        onNext={questions.length <= currentQuestion + 1 ? null : toNextQuestion}
-        onSummary={toSummaryPage}
-      />
+    <Panel
+      title={'Arithmetic Test'}
+      toolbarActions={toolbarActions}
+      loading={questions === null || !questions?.length}
+    >
+      {questions && (
+        <QAView
+          key={currentQuestion}
+          testDone={qSettings.timeLimit > 0 && timeLeft <= 0}
+          timeLimit={qSettings.timeLimitPerQuestion}
+          question={questions[currentQuestion]}
+          currentPosition={currentQuestion + 1}
+          totalQuestions={questions.length}
+          answer={answers.length > currentQuestion ? answers[currentQuestion] : {}}
+          onSubmit={onAnswerSubmitted}
+          onNext={questions.length <= currentQuestion + 1 ? null : toNextQuestion}
+          onSummary={toSummaryPage}
+        />
+      )}
 
       {/* <pre>{JSON.stringify(questions, null, 2)}</pre> */}
       {/* <pre>{JSON.stringify(answers, null, 2)}</pre> */}

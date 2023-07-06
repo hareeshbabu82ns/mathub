@@ -8,6 +8,7 @@ import * as yup from 'yup';
 import { useQuery, useMutation, gql } from '@apollo/client';
 
 import {
+  ARITHMETIC_OPERATION,
   ARITHMETIC_OPERATIONS_ALL,
   ARITHMETIC_OPERATIONS_DEFAULT,
 } from '../../utils/gen_arithmetic_qa';
@@ -62,7 +63,17 @@ const SettingsPage = () => {
       await createTestSetting({ variables: { settings: formData } });
     }
     navigate('new', {
-      state: { qSettings: { ...formData, max: formData.totalQuestions }, replace: true },
+      state: {
+        qSettings: {
+          ...formData,
+          max: Math.pow(10, parseInt(formData.maxDigits)),
+          count: formData.totalQuestions,
+          includingOperations: formData.includingOperations.map(
+            (op) => ARITHMETIC_OPERATION[op].sign,
+          ),
+        },
+        replace: true,
+      },
     });
   };
 
