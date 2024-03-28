@@ -117,13 +117,13 @@ describe('Abacus Generation Tests', () => {
         maxCount: 6,
         minLengthOfDigits: 1,
         maxLengthOfDigits: 2,
-        maxNumber: 10,
+        maxNumber: 30,
         maxSum: 60,
         isNegativeAllowed: true,
         maxRetries: 10,
       };
       const res = generateAbacusQuestions(params);
-      console.log('questions all constraints', res);
+      // console.log('questions all constraints', res);
       expect(res.length).toBe(params.count);
       res.forEach((question, idx) => {
         // console.log(`all constraints: question ${idx}:\n`, question);
@@ -140,6 +140,7 @@ describe('Abacus Generation Tests', () => {
           sumCalc += num;
           // if (sumCalc < 0) console.log(question.numbers);
           expect(sumCalc).toBeGreaterThanOrEqual(0);
+          expect(Math.abs(num)).toBeLessThanOrEqual(params.maxNumber);
           expect(Math.abs(num).toString().length).toBeGreaterThanOrEqual(params.minLengthOfDigits);
           expect(Math.abs(num).toString().length).toBeLessThanOrEqual(params.maxLengthOfDigits);
           expect(num).not.toEqual(0);

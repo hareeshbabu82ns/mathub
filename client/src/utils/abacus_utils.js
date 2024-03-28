@@ -117,9 +117,9 @@ export function generateAbacusNumbers({
   maxCount = 6,
   minLengthOfDigits = 1,
   maxLengthOfDigits = 1,
-  maxNumber: maxDigit = 10,
-  minSum = 0,
-  maxSum = 10,
+  maxNumber: maxDigit,
+  minSum,
+  maxSum,
   negativesAllowed = true,
   maxRetries = 15,
 }) {
@@ -140,9 +140,9 @@ export function generateAbacusNumbers({
   // const minNumber = minLengthOfDigits === 1 ? 1 : Math.pow(10, minLengthOfDigits - 1);
   const maxNumber = Math.pow(10, maxLengthOfDigits) - 1;
 
-  // if (maxDigit > maxNumber || maxDigit < minNumber) {
-  //   throw new Error(`maxDigit ${maxDigit} should be between ${minNumber} and ${maxNumber}`);
-  // }
+  if (maxDigit && (maxDigit > maxNumber || maxDigit < minNumber)) {
+    throw new Error(`maxDigit ${maxDigit} should be between ${minNumber} and ${maxNumber}`);
+  }
 
   const count = Math.floor(Math.random() * (maxCount - minCount + 1)) + minCount;
 
@@ -161,7 +161,7 @@ export function generateAbacusNumbers({
         minLengthOfDigits,
         maxLengthOfDigits,
         minNumber: minNumber,
-        maxNumber: maxNumber,
+        maxNumber: Math.min(maxDigit, maxNumber),
         // minNumber: negativesAllowed ? -maxDigit : 1,
         // maxNumber: maxDigit,
         negativesAllowed: negativesAllowed && i !== 0,
@@ -214,9 +214,9 @@ export function generateAbacusQuestions({
   maxCount = 6,
   minLengthOfDigits = 1,
   maxLengthOfDigits = 1,
-  maxNumber = 10,
-  minSum = 0,
-  maxSum = 50,
+  maxNumber,
+  minSum,
+  maxSum,
   isNegativeAllowed = true,
   maxRetries = 15,
 }) {
