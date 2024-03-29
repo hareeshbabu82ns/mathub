@@ -1,5 +1,8 @@
 // const crypto = require('crypto');
 
+import moment from 'moment';
+import { remainingDurationFormat } from './formatting';
+
 // function getCryptoRandomNumber(min, max) {
 //   const randomBytes = crypto.randomBytes(4);
 //   const randomInt = (randomBytes.readUInt32BE(0) / 0x100000000) * (max - min + 1) + min;
@@ -208,8 +211,22 @@ export function generateAbacusNumbers({
 
   return numbers;
 }
+
+export const ABACUS_SETTINGS_DEFAULT = {
+  totalQuestions: 10,
+  minCount: 3,
+  maxCount: 6,
+  minLengthOfDigits: 1,
+  maxLengthOfDigits: 1,
+  maxNumber: 9,
+  minSum: 0,
+  maxSum: 100,
+  isNegativeAllowed: true,
+  maxRetries: 15,
+};
+
 export function generateAbacusQuestions({
-  count = 10,
+  totalQuestions = 10,
   minCount = 3,
   maxCount = 6,
   minLengthOfDigits = 1,
@@ -221,7 +238,7 @@ export function generateAbacusQuestions({
   maxRetries = 15,
 }) {
   const questions = [];
-  for (let i = 0; i < count; i++) {
+  for (let i = 0; i < totalQuestions; i++) {
     let numbers;
 
     let retries = 0;
@@ -253,9 +270,66 @@ export function generateAbacusQuestions({
     } while (retries < maxRetries);
 
     questions.push({
-      numbers,
+      question: numbers,
       answer: numbers.reduce((acc, num) => acc + num, 0),
     });
   }
   return questions;
 }
+
+export const collectiveSummary = (testData = []) => {
+  const timeSeries = testData.map((d, i) => {
+    const diff = moment(d.updatedAt).diff(d.createdAt, 'seconds');
+    const numOfQs = d.questions.length;
+    const normalizedValue = Math.round((100 / numOfQs) * diff);
+    // console.log(`collectiveSummary: ${i}: Math.round((100 / ${numOfQs}) * ${diff}) = ${normalizedValue}`)
+
+    return {
+      time: moment(d.createdAt).format('MMM DD'),
+      value: normalizedValue,
+    };
+  });
+
+  return {
+    timeSeries,
+  };
+};
+
+export const summary = (testData) => {
+  const { answers, questions, createdAt, updatedAt, type } = testData;
+
+  const correctAnswers = questions.filter((q, i) => q.result === Number(answers[i]?.value));
+  const testTimeDiff = remainingDurationFormat(moment(updatedAt).diff(createdAt, 'seconds'));
+
+  const operations = new Set();
+  const operationWise = {};
+  const defaultOpSummary = {
+    operation: '',
+    correctAnswers: 0,
+    wrongAnswers: 0,
+    totalQuestions: 0,
+  };
+
+  questions.forEach((q, i) => {
+    operations.add(q.operation || q.operator1);
+    const opWise = operationWise[q.operation || q.operator1] || { ...defaultOpSummary };
+
+    opWise.operation = q.operation || q.operator1;
+    opWise.totalQuestions = opWise.totalQuestions + 1;
+    if (q.result === Number(answers[i]?.value)) opWise.correctAnswers = opWise.correctAnswers + 1;
+
+    opWise.wrongAnswers = opWise.totalQuestions - opWise.correctAnswers;
+
+    operationWise[q.operation || q.operator1] = opWise;
+  });
+
+  return {
+    totalQuestions: questions.length,
+    wrongAnswers: questions.length - correctAnswers.length,
+    correctAnswers: correctAnswers.length,
+    testTimeDiff,
+    operations: [...operations].sort(),
+    operationWise,
+    type,
+  };
+};

@@ -112,7 +112,7 @@ describe('Abacus Generation Tests', () => {
 
     test('should return 25 questions with all constraints', () => {
       const params = {
-        count: 25,
+        totalQuestions: 25,
         minCount: 3,
         maxCount: 6,
         minLengthOfDigits: 1,
@@ -124,21 +124,21 @@ describe('Abacus Generation Tests', () => {
       };
       const res = generateAbacusQuestions(params);
       // console.log('questions all constraints', res);
-      expect(res.length).toBe(params.count);
-      res.forEach((question, idx) => {
+      expect(res.length).toBe(params.totalQuestions);
+      res.forEach((qSet, idx) => {
         // console.log(`all constraints: question ${idx}:\n`, question);
-        expect(question.numbers.length).toBeGreaterThanOrEqual(params.minCount);
-        expect(question.numbers.length).toBeLessThanOrEqual(params.maxCount);
-        const sum = question.numbers.reduce((acc, num) => acc + num, 0);
+        expect(qSet.question.length).toBeGreaterThanOrEqual(params.minCount);
+        expect(qSet.question.length).toBeLessThanOrEqual(params.maxCount);
+        const sum = qSet.question.reduce((acc, num) => acc + num, 0);
         // expect(sum).toBeGreaterThan(0);
-        expect(sum).toBe(question.answer);
+        expect(sum).toBe(qSet.answer);
         expect(sum).toBeLessThanOrEqual(params.maxSum);
-        expect(question.numbers[0]).toBeGreaterThan(0);
-        // expect(question.numbers.some((num) => num < 0)).toBe(true);
+        expect(qSet.question[0]).toBeGreaterThan(0);
+        // expect(question.question.some((num) => num < 0)).toBe(true);
         let sumCalc = 0;
-        question.numbers.forEach((num) => {
+        qSet.question.forEach((num) => {
           sumCalc += num;
-          // if (sumCalc < 0) console.log(question.numbers);
+          // if (sumCalc < 0) console.log(question.question);
           expect(sumCalc).toBeGreaterThanOrEqual(0);
           expect(Math.abs(num)).toBeLessThanOrEqual(params.maxNumber);
           expect(Math.abs(num).toString().length).toBeGreaterThanOrEqual(params.minLengthOfDigits);

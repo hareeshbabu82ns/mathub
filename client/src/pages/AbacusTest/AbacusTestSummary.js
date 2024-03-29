@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
 import { useQuery, gql, NetworkStatus } from '@apollo/client';
 
-import Panel from './Panel';
+import Panel from 'components/Panel';
 import { CircularProgress, IconButton, List, ListItem, Stack, Typography } from '@mui/material';
 import moment from 'moment';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import { summary, collectiveSummary } from '../utils/arithmetic_utils';
-import ArithmeticTestStackedBarChart from './ArithmeticTestStackedBarChart';
-import TestTimeBarChart from './TestTimeBarChart';
-import { ARITHMETIC_OPERATION_SIGN } from 'utils/gen_arithmetic_qa';
+import { summary, collectiveSummary } from 'utils/abacus_utils';
+import TestTimeBarChart from 'components/TestTimeBarChart';
 
 const FETCT_TEST_SUMMARY = gql`
   query FetchTestSummary($from: DateTime!) {
-    tests(where: { type: ARITHMETIC, createdAt_gte: $from }, orderBy: { createdAt: DESC }) {
+    tests(where: { type: ABACUS, createdAt_gte: $from }, orderBy: { createdAt: DESC }) {
       id
       createdAt
       updatedAt
@@ -23,9 +21,9 @@ const FETCT_TEST_SUMMARY = gql`
   }
 `;
 
-const sinceTenDays = moment().subtract(10, 'days').toISOString();
+const sinceTenDays = moment().subtract(300, 'days').toISOString();
 
-const ArithmeticTestSummary = () => {
+const AbacusTestSummary = () => {
   const variables = { from: sinceTenDays };
   const { loading, data, refetch, networkStatus } = useQuery(FETCT_TEST_SUMMARY, {
     variables,
@@ -50,16 +48,6 @@ const ArithmeticTestSummary = () => {
 
     const s = summary(d);
 
-    const chartData = s.operations.map((o) => {
-      const d = s.operationWise[o];
-      return {
-        operation: ARITHMETIC_OPERATION_SIGN[d.operation || d.operator1].symbol,
-        correct: d.correctAnswers,
-        wrong: d.wrongAnswers,
-        total: d.totalQuestions,
-      };
-    });
-
     const qaSummaryLine = ({ correctAnswers, totalQuestions, wrongAnswers }) => (
       <Typography as="span" fontSize={20}>
         {' '}
@@ -69,35 +57,17 @@ const ArithmeticTestSummary = () => {
         </Typography>
       </Typography>
     );
-    const qaOperationWiseSummaryLine = ({
-      operation,
-      correctAnswers,
-      totalQuestions,
-      wrongAnswers,
-    }) => (
-      <>
-        <Typography as="span" fontSize={24}>
-          {ARITHMETIC_OPERATION_SIGN[operation].symbol}
-        </Typography>
-        : {qaSummaryLine({ correctAnswers, totalQuestions, wrongAnswers })} {'; '}
-      </>
-    );
 
     return (
       <ListItem key={d.id} sx={{ border: 1, borderRadius: 1, borderColor: 'grey.300', mb: 1 }}>
         <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ flexGrow: 1, alignItems: 'center' }}>
           <Stack sx={{ flexGrow: 1 }}>
-            <Typography>
-              {d.startAt} ( {s.testTimeDiff} ) {qaSummaryLine({ ...s })}
+            <Typography variant="h5">
+              ( {s.testTimeDiff} ) {qaSummaryLine({ ...s })}
             </Typography>
-            <span>
-              {/* <Typography as="span" fontSize={16} sx={{ color: 'grey.500' }}>{d.type}</Typography> */}{' '}
-              {s.operations.map((operation) =>
-                qaOperationWiseSummaryLine({ ...s.operationWise[operation] }),
-              )}{' '}
-            </span>
+            <Typography variant="subtitle2">{d.startAt}</Typography>
           </Stack>
-          <ArithmeticTestStackedBarChart data={chartData} />
+          {/* <ArithmeticTestStackedBarChart data={chartData} /> */}
         </Stack>
       </ListItem>
     );
@@ -119,27 +89,20 @@ const ArithmeticTestSummary = () => {
   );
 
   return (
-    <Panel title="Arithmetic Tests" toolbarActions={toolbarActions}>
+    <Panel title="Abacus Tests" toolbarActions={toolbarActions}>
       {/* {JSON.stringify(data, null, 2)} */}
 
       <Stack spacing={2}>
-        <Panel title="Charts">
-          <Stack>
-            <TestTimeBarChart
-              data={timeSeries}
-              title="Time took for Test"
-              height={200}
-              width={300}
-            />
-          </Stack>
-        </Panel>
-
-        <Panel title="History">
-          <List>{data?.tests?.map(listItem)}</List>
-        </Panel>
+        <TestTimeBarChart
+          data={timeSeries}
+          title="Time took for Test"
+          height={300}
+          width={'100%'}
+        />
+        <List>{data?.tests?.map(listItem)}</List>
       </Stack>
     </Panel>
   );
 };
 
-export default ArithmeticTestSummary;
+export default AbacusTestSummary;
