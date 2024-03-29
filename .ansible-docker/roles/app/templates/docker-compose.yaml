@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  mathub:
+    image: "{{docker_fdqn}}/home/{{app_name}}:{{img_tag}}"
+    container_name: "{{app_name}}"
+    ports:
+      - "{{app_http_port}}:{{app_port}}"
+    restart: unless-stopped
+    env_file:
+      - ".env"

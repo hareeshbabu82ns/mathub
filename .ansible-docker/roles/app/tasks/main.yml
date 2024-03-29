@@ -1,0 +1,52 @@
+---
+- name: GitTag from Extra Vars
+  set_fact:
+    img_tag: "{{ git_tag | default('latest') }}"
+
+- name: AppName from Extra Vars
+  set_fact:
+    app_name: "{{ git_repo }}"
+  when: (git_branch is not defined) or (git_branch|length == 0) or (git_branch == "master") or (git_branch == "main")
+
+- name: AppName from Extra Vars
+  set_fact:
+    app_name: "{{ git_branch }}"
+  when: (app_name is not defined) or (app_name|length == 0)
+
+- name: App Name
+  debug:
+    var: app_name
+
+- name: Check GitTag
+  set_fact:
+    img_tag: latest
+  when: (img_tag is not defined) or (img_tag|length == 0)
+
+- name: ImgTag
+  debug:
+    var: img_tag
+
+- name: Git Commit SHA
+  debug:
+    var: commit_sha
+
+- name: remove old deployment on docker
+  shell: >
+    docker compose -f {{app_dir}}/docker-compose.yaml down
+  ignore_errors: true
+
+- name: copy templates to tmp
+  template:
+    src: "{{item}}"
+    dest: "{{app_dir}}/{{item}}"
+    owner: "{{ansible_ssh_user}}"
+    # group: users
+    # mode: 0600
+  loop:
+    - docker-compose.yaml
+    - .env
+
+- name: apply deployment to docker
+  shell: >
+    docker compose -f {{app_dir}}/docker-compose.yaml pull \
+    && docker compose -f {{app_dir}}/docker-compose.yaml up -d

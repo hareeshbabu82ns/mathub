@@ -14,7 +14,7 @@ const QASummaryPage = () => {
     moment(testTimings.endTime).diff(testTimings.startTime, 'seconds'),
   );
 
-  const correctAnswers = questions.filter((q, i) => q.result === Number(answers[i]?.value));
+  const correctAnswers = questions.filter((q, i) => q.answer === Number(answers[i]?.value));
 
   return (
     <Stack spacing={2}>

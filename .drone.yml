@@ -42,7 +42,50 @@ steps:
   #   branch:
   #   - docker
 
-# # Deploy app using ansible
+# Deploy app using ansible to docker
+- name: apply ansible playbook
+  image: plugins/ansible:3
+  environment:
+    ansible_vault_pass:
+      from_secret: ansible_vault_pass
+  settings:
+    playbook: .ansible-docker/playbook.yml
+    # galaxy: .ansible/requirements.yml
+    inventory: .ansible-docker/inventory
+    private_key:
+      from_secret: host_ssh_key
+    vault_password:
+      from_secret: ansible_vault_pass
+    extra_vars: git_repo=${DRONE_REPO_NAME/\//-},git_tag=${DRONE_TAG=latest},git_branch=${DRONE_BRANCH/\//-},commit_sha=${DRONE_COMMIT_SHA}
+    # ref https://docs.drone.io/pipeline/environment/substitution/
+  # when:
+  #   branch:
+  #   - master
+
+# # Deploy app using docker ssh key
+# - name: mathub - deploy docker image
+#   image: appleboy/drone-ssh
+#   settings:
+#     host:
+#       from_secret: host_docker_vm
+#     port: 22
+#     username:
+#       from_secret: host_ssh_user
+#     key:
+#       from_secret: host_ssh_key
+#     script:
+#       # - echo $DPASS | docker login docker.$SERVER_DOMAIN -u $DUSER --password-stdin
+#       - docker pull docker.$SERVER_DOMAIN/home/$APP_NAME:$DRONE_TAG
+#       - docker stop $APP_NAME || true
+#       - docker rm $APP_NAME || true
+#       # - docker run -d --name $APP_NAME -p 80:80 docker.$SERVER_DOMAIN/home/$APP_NAME:$DRONE_TAG
+#       # - docker compose -f docker-compose.yml pull
+#       - docker compose -f docker-compose.yml up -d
+#   when:
+#     branch:
+#     - master
+
+# # Deploy app using ansible to k8s
 # - name: apply ansible playbook
 #   image: plugins/ansible:3
 #   environment:
