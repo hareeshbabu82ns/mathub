@@ -269,9 +269,33 @@ export function generateAbacusQuestions({
       if (!hasNegative) break;
     } while (retries < maxRetries);
 
+    // generate answers randomly and add sum to the answers in random place
+    const randomIndex = Math.floor(Math.random() * 1000) % 4;
+    const answer = numbers.reduce((acc, num) => acc + num, 0);
+    const min = Math.max(0, answer - 10);
+    const max = Math.min(maxSum, min + answer + 10);
+    const choices = [];
+    Array(4)
+      .fill(0)
+      .forEach((_, index) => {
+        if (index === randomIndex) {
+          choices.push(answer);
+        } else {
+          let retries = 0;
+          let randomNumber = 0;
+          do {
+            randomNumber = generateRandomNumber({ min, max, zeroAllowed: true, maxRetries });
+            retries++;
+            if (!choices.includes(randomNumber) || randomNumber !== answer) break;
+          } while (retries < maxRetries);
+          choices.push(randomNumber);
+        }
+      });
+
     questions.push({
       question: numbers,
-      answer: numbers.reduce((acc, num) => acc + num, 0),
+      choices,
+      answer,
     });
   }
   return questions;
@@ -298,7 +322,7 @@ export const collectiveSummary = (testData = []) => {
 export const summary = (testData) => {
   const { answers, questions, createdAt, updatedAt, type } = testData;
 
-  const correctAnswers = questions.filter((q, i) => q.result === Number(answers[i]?.value));
+  const correctAnswers = questions.filter((q, i) => q.answer === Number(answers[i]?.value));
   const testTimeDiff = remainingDurationFormat(moment(updatedAt).diff(createdAt, 'seconds'));
 
   const operations = new Set();
@@ -316,7 +340,7 @@ export const summary = (testData) => {
 
     opWise.operation = q.operation || q.operator1;
     opWise.totalQuestions = opWise.totalQuestions + 1;
-    if (q.result === Number(answers[i]?.value)) opWise.correctAnswers = opWise.correctAnswers + 1;
+    if (q.answer === Number(answers[i]?.value)) opWise.correctAnswers = opWise.correctAnswers + 1;
 
     opWise.wrongAnswers = opWise.totalQuestions - opWise.correctAnswers;
 

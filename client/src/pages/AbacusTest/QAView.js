@@ -13,6 +13,8 @@ import useCountDownTimer from 'hooks/CountDownTimer';
 import LinearProgressWithLabel from 'components/LinearProgressWithLabel';
 import { remainingDurationFormat } from 'utils/formatting';
 import { SPEECH_SYNTHESIS_STATUS, SpeechSynthesisContext } from 'hooks/useSpeechSynthesis';
+import { FormInputMultiCheckbox } from 'components/FormInput/FormInputMultiCheckbox';
+import { FormInputChoices } from 'components/FormInput/FormInputChoices';
 
 const QAView = ({
   timeLimit,
@@ -63,7 +65,10 @@ const QAView = ({
         <QuestionView {...{ done: testDone || done, question }} />
       </Grid>
       <Grid item xs={12}>
-        <AnswerView {...{ done: testDone || done, answer, onNext, onSubmit, onSummary }} />
+        <AnswerView
+          choices={question.choices}
+          {...{ done: testDone || done, answer, onNext, onSubmit, onSummary }}
+        />
       </Grid>
     </Grid>
   );
@@ -132,7 +137,7 @@ const QuestionView = ({ done, question }) => {
     </Panel>
   );
 };
-const AnswerView = ({ done, answer, onSubmit, onNext, onSummary }) => {
+const AnswerView = ({ done, answer, choices, onSubmit, onNext, onSummary }) => {
   const methods = useForm({ defaultValues: { value: '' } });
   const { handleSubmit, control } = methods;
 
@@ -163,14 +168,26 @@ const AnswerView = ({ done, answer, onSubmit, onNext, onSummary }) => {
   return (
     <Panel actionsRight={actionsRight}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <FormInputText
-          name="value"
-          label="Answer"
-          type="number"
-          control={control}
-          disabled={done}
-        />
+        {!choices && (
+          <FormInputText
+            name="value"
+            label="Answer"
+            type="number"
+            control={control}
+            disabled={done}
+          />
+        )}
+        {choices && (
+          <FormInputChoices
+            name="value"
+            label="Answer"
+            control={control}
+            choices={choices}
+            disabled={done}
+          />
+        )}
       </form>
+      {/* <pre>{JSON.stringify(choices, null, 2)}</pre> */}
     </Panel>
   );
 };

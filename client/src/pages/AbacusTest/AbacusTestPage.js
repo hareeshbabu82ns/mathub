@@ -1,18 +1,17 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 
-import { generateAbacusQuestions } from '../../utils/abacus_utils';
+import { generateAbacusQuestions } from 'utils/abacus_utils';
 import { defaultSettings } from './SettingsPage';
-import Panel from '../../components/Panel';
-import LinearProgressWithLabel from '../../components/LinearProgressWithLabel';
-import useCountDownTimer from '../../hooks/CountDownTimer';
+import Panel from 'components/Panel';
+import LinearProgressWithLabel from 'components/LinearProgressWithLabel';
+import useCountDownTimer from 'hooks/CountDownTimer';
 import { Box } from '@mui/material';
 import moment from 'moment';
 import { useMutation, gql } from '@apollo/client';
 
-import { remainingDurationFormat } from '../../utils/formatting';
+import { remainingDurationFormat } from 'utils/formatting';
 import QAView from './QAView';
-import { SpeechSynthesisContext } from 'hooks/useSpeechSynthesis';
 
 // mutation_root.insert_mathub_test(objects: [mathub_test_insert_input!]!)
 const ADD_TEST = gql`
