@@ -2,67 +2,80 @@
 @tailwind components;
 @tailwind utilities;
 
+/* https://gradient.page/tools/shadcn-ui-theme-generator */
+
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    --base: #13253a;
 
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    /* CSS: .bg-gradient { background: var(--gradient) } */
+    --gradient: #13253a;
+    --background: 226 97.55% 98.3%;
+    --foreground: 226 5.1% 0.6%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
+    --muted: 226 5.1% 91.5%;
+    --muted-foreground: 226 2.55% 41.5%;
 
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
+    --popover: 226 49.2% 91.5%;
+    --popover-foreground: 226 5.1% 0.75%;
 
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
+    --card: 226 49.2% 91.5%;
+    --card-foreground: 226 5.1% 0.75%;
 
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
+    --border: 226 10.1% 89.6%;
+    --input: 226 10.1% 89.6%;
 
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    --primary: 226 51% 15%;
+    --primary-foreground: 226 1.02% 91.5%;
+
+    --secondary: 226 2.55% 95.75%;
+    --secondary-foreground: 226 4.0600000000000005% 11.5%;
+
+    --accent: 226 2.55% 95.75%;
+    --accent-foreground: 226 4.0600000000000005% 11.5%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 10% 3.9%;
+    --ring: 226 51% 15%;
 
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
+    --base: #c7d9ed;
 
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
+    /* CSS: .bg-gradient { background: var(--gradient) } */
+    --gradient: #c7d9ed;
 
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
+    --background: 225 33.15% 6.8%;
+    --foreground: 225 5.1% 99.25%;
 
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
+    --muted: 225 25.5% 25.5%;
+    --muted-foreground: 225 5.1% 58.5%;
 
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
+    --popover: 225 54.8% 11.049999999999999%;
+    --popover-foreground: 225 5.1% 99.25%;
 
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
+    --card: 225 54.8% 11.049999999999999%;
+    --card-foreground: 225 5.1% 99.25%;
 
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
+    --border: 225 25.5% 25.5%;
+    --input: 225 25.5% 25.5%;
+
+    --primary: 225 51% 85%;
+    --primary-foreground: 225 5.1% 8.5%;
+
+    --secondary: 225 25.5% 25.5%;
+    --secondary-foreground: 225 5.1% 99.25%;
+
+    --accent: 225 25.5% 25.5%;
+    --accent-foreground: 225 5.1% 99.25%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive-foreground: 225 5.1% 99.25%;
 
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
+    --ring: 225 51% 85%;
   }
 }
 
