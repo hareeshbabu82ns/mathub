@@ -35,6 +35,14 @@
     docker compose -f {{app_dir}}/docker-compose.yaml down
   ignore_errors: true
 
+- name: create app directory
+  file:
+    path: "{{app_dir}}"
+    state: directory
+    owner: "{{ansible_ssh_user}}"
+    # group: users
+    # mode: 0755
+
 - name: copy templates to tmp
   template:
     src: "{{item}}"
