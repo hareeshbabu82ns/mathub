@@ -24,10 +24,9 @@
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }],
-  "exclude": ["node_modules","./src/components/ui/**/*"]
+  "references": [{ "path": "./tsconfig.node.json" }]
 }
