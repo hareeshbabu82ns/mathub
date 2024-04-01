@@ -7,8 +7,9 @@ FROM node:18 as builder
 WORKDIR /usr/src/app
 
 COPY server/package.json ./
+COPY server/yarn.lock ./
 
-RUN git init
+# RUN git init
 RUN yarn install
 
 COPY server/ .
@@ -24,7 +25,7 @@ FROM node:20 as ui-builder
 WORKDIR /usr/src/app
 COPY ./client/package.json /usr/src/app
 COPY ./client/package-lock.json /usr/src/app
-RUN git init
+# RUN git init
 RUN npm install
 COPY client/ /usr/src/app
 RUN npm run build
