@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@types/cors": "^2.8.13",
+    "@types/mime-types": "^2.1.4",
     "@types/node": "^20.3.3",
     "copyfiles": "^2.4.1",
     "nodemon": "^2.0.22",
