@@ -2,7 +2,7 @@
 # Server BUILDER #
 ##################
 
-FROM node:20 as builder
+FROM node:16 as builder
 
 WORKDIR /usr/src/app
 
