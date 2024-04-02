@@ -1,7 +1,7 @@
 version: "3"
 
 services:
-  mathub:
+  "{{app_name}}":
     image: "{{docker_fdqn}}/home/{{app_name}}:{{img_tag}}"
     container_name: "{{app_name}}"
     ports:

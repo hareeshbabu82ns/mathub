@@ -1,49 +1,49 @@
-import WithLoaderErrorOverlay from "@/components/WithLoaderErrorOverlay";
+import WithLoaderErrorOverlay from '@/components/WithLoaderErrorOverlay'
 import {
   IAbacusCollectiveTestSummary,
   IAbacusTestData,
   collectiveSummary,
-} from "@/lib/abacus_utils";
-import { FETCT_TEST_SUMMARY } from "@/lib/gql_queries";
-import { useQuery } from "@apollo/client";
-import { subDays } from "date-fns";
-import { useEffect, useState } from "react";
-import AvgTimes from "../AbacusTest/AvgTimes";
-import AvgQuestions from "../AbacusTest/AvgQuestions";
-import DailyQuestions from "../AbacusTest/DailyQuestions";
-import { DatePickerWithRange } from "./DateRangePicker";
-import { DateRange } from "react-day-picker";
+} from '@/lib/abacus_utils'
+import { FETCT_TEST_SUMMARY } from '@/lib/gql_queries'
+import { useQuery } from '@apollo/client'
+import { subDays } from 'date-fns'
+import { useEffect, useState } from 'react'
+import AvgTimes from '../AbacusTest/AvgTimes'
+import AvgQuestions from '../AbacusTest/AvgQuestions'
+import DailyQuestions from '../AbacusTest/DailyQuestions'
+import { DatePickerWithRange } from './DateRangePicker'
+import { DateRange } from 'react-day-picker'
 
 const DashboardPage = () => {
   const [dateRange, setDateRange] = useState<DateRange>({
     from: subDays(new Date(), 7),
     to: new Date(),
-  });
+  })
 
   const { loading, error, data, refetch } = useQuery<{
-    tests: IAbacusTestData[];
+    tests: IAbacusTestData[]
   }>(FETCT_TEST_SUMMARY, {
-    variables: { from: dateRange.from, to: dateRange.to },
-  });
+    variables: { type: 'ABACUS', from: dateRange.from, to: dateRange.to },
+  })
 
   const [testSummary, setTestSummary] = useState<IAbacusCollectiveTestSummary>({
     timeSeries: [],
     dailySeries: [],
-  } as IAbacusCollectiveTestSummary);
+  } as IAbacusCollectiveTestSummary)
 
   useEffect(() => {
     if (data?.tests) {
-      setTestSummary(collectiveSummary(data.tests));
+      setTestSummary(collectiveSummary(data.tests))
     }
-  }, [data]);
+  }, [data])
 
   useEffect(() => {
-    const variables = { from: dateRange.from, to: dateRange.to };
-    refetch(variables);
-  }, [refetch, dateRange]);
+    const variables = { from: dateRange.from, to: dateRange.to }
+    refetch(variables)
+  }, [refetch, dateRange])
 
   return (
-    <WithLoaderErrorOverlay isLoading={loading} error={error}>
+    <WithLoaderErrorOverlay loading={loading} error={error}>
       <div className="flex-1 space-y-4 ">
         <div className="flex items-center justify-between space-y-2">
           <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
@@ -53,7 +53,7 @@ const DashboardPage = () => {
                 fromDate={dateRange.from}
                 toDate={dateRange.to}
                 onDateUpdate={(from, to) => {
-                  setDateRange({ from, to });
+                  setDateRange({ from, to })
                 }}
               />
             </div>
@@ -62,35 +62,35 @@ const DashboardPage = () => {
             </button> */}
           </div>
         </div>
-        <div className="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 space-y-4">
+        <div className="mt-2 space-y-4 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-8">
-            <div className="rounded-xl border bg-card text-card-foreground shadow col-span-4">
+            <div className="col-span-4 rounded-xl border bg-card text-card-foreground shadow">
               <div className="flex flex-col space-y-1.5 p-6">
                 <h3 className="font-semibold leading-none tracking-tight">
                   Average Time Per Question
                 </h3>
               </div>
-              <div className="w-full h-96">
+              <div className="h-96 w-full">
                 <AvgTimes data={testSummary.timeSeries} />
               </div>
             </div>
-            <div className="rounded-xl border bg-card text-card-foreground shadow col-span-4">
+            <div className="col-span-4 rounded-xl border bg-card text-card-foreground shadow">
               <div className="flex flex-col space-y-1.5 p-6">
                 <h3 className="font-semibold leading-none tracking-tight">
                   Average Answers
                 </h3>
               </div>
-              <div className="w-full h-96">
+              <div className="h-96 w-full">
                 <AvgQuestions data={testSummary.timeSeries} />
               </div>
             </div>
-            <div className="rounded-xl border bg-card text-card-foreground shadow col-span-4">
+            <div className="col-span-4 rounded-xl border bg-card text-card-foreground shadow">
               <div className="flex flex-col space-y-1.5 p-6">
                 <h3 className="font-semibold leading-none tracking-tight">
                   Daily Stats
                 </h3>
               </div>
-              <div className="w-full h-96">
+              <div className="h-96 w-full">
                 <DailyQuestions data={testSummary.dailySeries} />
               </div>
             </div>
@@ -99,7 +99,7 @@ const DashboardPage = () => {
         {/* <pre>{JSON.stringify(testSummary, null, 2)}</pre> */}
       </div>
     </WithLoaderErrorOverlay>
-  );
-};
+  )
+}
 
-export default DashboardPage;
+export default DashboardPage

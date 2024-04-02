@@ -1,4 +1,4 @@
-import { Home, ShoppingCart, Package, Users, LineChart } from "lucide-react";
+import { Home, Sliders as Abacus, Sigma as Arithmetic } from "lucide-react";
 
 export const sidebarNavItems = [
   {
@@ -7,24 +7,14 @@ export const sidebarNavItems = [
     path: "/",
   },
   {
-    title: "Orders",
-    Icon: ShoppingCart,
-    path: "/orders",
+    title: "Arithmetic",
+    Icon: Arithmetic,
+    path: "/arithmetic",
     badge: 6,
   },
   {
-    title: "Products",
-    Icon: Package,
-    path: "/products",
-  },
-  {
-    title: "Customers",
-    Icon: Users,
-    path: "/customers",
-  },
-  {
-    title: "Analytics",
-    Icon: LineChart,
-    path: "/analytics",
+    title: "Abacus",
+    Icon: Abacus,
+    path: "/abacus",
   },
 ];
