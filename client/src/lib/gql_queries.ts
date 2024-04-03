@@ -45,6 +45,18 @@ export const FETCT_TEST_SUMMARY = gql`
 `
 
 ///////// Test Mutations //////////
+export const FETCH_TEST_BY_ID = gql`
+  query ($id: ID!) {
+    test(where: { id: $id }) {
+      id
+      type
+      questions
+      answers
+      createdAt
+      updatedAt
+    }
+  }
+`
 export const ADD_TEST = gql`
   mutation CreateTest(
     $type: TestType!

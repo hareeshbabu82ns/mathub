@@ -1,8 +1,10 @@
-import { SimplePageLayout } from "./components/layout";
-import { Routes, Route } from "react-router-dom";
-import DashboardPage from "./pages/Dashboard";
-import EmptyPageContent from "./components/EmptyPageContent";
-import AbacusSettingsPage from "./pages/AbacusTest/AbacusSettingsPage";
+import { SimplePageLayout } from './components/layout'
+import { Routes, Route } from 'react-router-dom'
+import DashboardPage from './pages/Dashboard'
+import EmptyPageContent from './components/EmptyPageContent'
+import AbacusSettingsPage from './pages/AbacusTest/AbacusSettingsPage'
+import AbacusTestPage from './pages/AbacusTest/AbacusTestPage'
+import AbacusTestSummaryPage from './pages/AbacusTest/AbacusTestSummaryPage'
 
 function App() {
   return (
@@ -16,15 +18,15 @@ function App() {
             <Route index element={<ArithmeticSettingsPage />} /> */}
           </Route>
           <Route path="abacus">
-            {/* <Route path="new" element={<AbacusTestPage />} />
-            <Route path="summary" element={<AbacusQASummaryPage />} /> */}
+            <Route path="new" element={<AbacusTestPage />} />
+            <Route path="summary/:id" element={<AbacusTestSummaryPage />} />
             <Route index element={<AbacusSettingsPage />} />
           </Route>
         </Route>
         <Route path="*" element={<EmptyPageContent />} />
       </Route>
     </Routes>
-  );
+  )
 }
 
-export default App;
+export default App

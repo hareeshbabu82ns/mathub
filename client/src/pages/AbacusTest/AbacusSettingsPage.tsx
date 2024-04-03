@@ -18,10 +18,15 @@ import { Slider } from '@/components/ui/slider'
 import { Switch } from '@/components/ui/switch'
 import { IAbacusSettingsData, INIT_ABACUS_SETTINGS } from '@/lib/abacus_types'
 import { useForm, useFormContext } from 'react-hook-form'
-import { useQuery } from '@apollo/client'
-import { FETCH_TEST_SETTINGS } from '@/lib/gql_queries'
+import { useMutation, useQuery } from '@apollo/client'
+import {
+  CREATE_TEST_SETTINGS,
+  FETCH_TEST_SETTINGS,
+  UPDATE_TEST_SETTINGS,
+} from '@/lib/gql_queries'
 import WithLoaderErrorOverlay from '@/components/WithLoaderErrorOverlay'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 // const formSchema = z.object({
 //   username: z
@@ -30,11 +35,61 @@ import { useState } from 'react'
 // })
 
 const AbacusSettingsPage = () => {
+  const navigate = useNavigate()
+
   const [refreshCount, setRefreshCount] = useState(0)
 
   const { loading, error, data, refetch } = useQuery(FETCH_TEST_SETTINGS, {
     variables: { type: 'ABACUS' },
   })
+  const [createTestSetting, { error: createErrors }] =
+    useMutation(CREATE_TEST_SETTINGS)
+  const [updateTestSetting, { error: updateErrors }] =
+    useMutation(UPDATE_TEST_SETTINGS)
+
+  const handleSubmit = async (formSettings: Partial<IAbacusSettingsData>) => {
+    const settings = {
+      ...INIT_ABACUS_SETTINGS,
+      ...formSettings,
+    } satisfies IAbacusSettingsData
+
+    console.log(settings)
+    let settingsId = data.testsettings[0]?.id
+
+    if (settingsId) {
+      const { errors } = await updateTestSetting({
+        variables: {
+          id: settingsId,
+          type: 'ABACUS',
+          settings,
+        },
+      })
+      if (errors) {
+        console.error(errors)
+        return
+      }
+    } else {
+      const { data, errors } = await createTestSetting({
+        variables: {
+          type: 'ABACUS',
+          settings,
+        },
+      })
+      if (errors) {
+        console.error(errors)
+        return
+      } else if (data) {
+        console.log(data)
+        settingsId = data.createTestsetting.id
+      }
+    }
+    handleRefresh()
+    navigate('new', {
+      state: {
+        replace: true,
+      },
+    })
+  }
 
   const handleRefresh = () => {
     setRefreshCount((count) => count + 1)
@@ -42,10 +97,14 @@ const AbacusSettingsPage = () => {
   }
 
   return (
-    <WithLoaderErrorOverlay loading={loading} error={error}>
+    <WithLoaderErrorOverlay
+      loading={loading}
+      error={error || createErrors || updateErrors}
+    >
       <SettingsForm
         key={`settings-form-${refreshCount}`}
         onRefetch={handleRefresh}
+        onSubmit={handleSubmit}
         initSettings={{
           ...INIT_ABACUS_SETTINGS,
           ...data?.testsettings[0]?.settings,
@@ -67,24 +126,27 @@ interface IFormProps {
 }
 
 const SettingsForm = ({
+  onSubmit,
   onRefetch,
   initSettings,
 }: {
+  onSubmit: (settings: Partial<IAbacusSettingsData>) => void
   onRefetch: () => void
   initSettings: IAbacusSettingsData
 }) => {
-  const onSubmit = (formData: IFormProps) => {
+  const onSubmitForm = (formData: IFormProps) => {
     const res = {
       ...formData,
       minNumber: formData.numberRange[0],
       maxNumber: formData.numberRange[1],
-      minDigits: formData.digitRange[0],
-      maxDigits: formData.digitRange[1],
+      minLengthOfDigits: formData.digitRange[0],
+      maxLengthOfDigits: formData.digitRange[1],
       totalQuestions: formData.totalQuestions[0],
       timeLimit: formData.timeLimit[0],
       timeLimitPerQuestion: formData.timeLimitPerQuestion[0],
-    }
+    } satisfies Partial<IAbacusSettingsData>
     console.log(res)
+    onSubmit(res)
   }
 
   const formData = useForm<IFormProps>({
@@ -106,11 +168,11 @@ const SettingsForm = ({
   return (
     <Form {...formData}>
       <form
-        className="items-startoverflow-auto grid w-full"
-        onSubmit={handleSubmit(onSubmit)}
+        className="grid w-full items-start overflow-auto"
+        onSubmit={handleSubmit(onSubmitForm)}
       >
         <div className="rounded-sm border">
-          <div className="flex h-12 items-center justify-between border-b-2 p-2 px-4">
+          <div className="flex items-center justify-between border-b-2 p-2 px-4">
             <h1 className="text-lg font-extrabold">Settings</h1>
             <div>
               <Button

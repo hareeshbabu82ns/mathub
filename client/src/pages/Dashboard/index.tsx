@@ -1,9 +1,5 @@
 import WithLoaderErrorOverlay from '@/components/WithLoaderErrorOverlay'
-import {
-  IAbacusCollectiveTestSummary,
-  IAbacusTestData,
-  collectiveSummary,
-} from '@/lib/abacus_utils'
+import { collectiveSummary } from '@/lib/abacus_utils'
 import { FETCT_TEST_SUMMARY } from '@/lib/gql_queries'
 import { useQuery } from '@apollo/client'
 import { subDays } from 'date-fns'
@@ -13,6 +9,10 @@ import AvgQuestions from '../AbacusTest/AvgQuestions'
 import DailyQuestions from '../AbacusTest/DailyQuestions'
 import { DatePickerWithRange } from './DateRangePicker'
 import { DateRange } from 'react-day-picker'
+import {
+  IAbacusCollectiveTestSummary,
+  IAbacusTestData,
+} from '@/lib/abacus_types'
 
 const DashboardPage = () => {
   const [dateRange, setDateRange] = useState<DateRange>({

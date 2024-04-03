@@ -44,7 +44,7 @@ export interface IAbacusQuestionSummary {
   isSkipped: boolean
 }
 export interface IAbacusQuestionData {
-  id: number
+  id?: number
   question: number[]
   choices: number[]
   answer: number
