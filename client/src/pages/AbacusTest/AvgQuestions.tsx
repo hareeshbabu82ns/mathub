@@ -1,3 +1,4 @@
+import { IAbacusTestSummary } from '@/lib/abacus_types'
 import {
   LineChart,
   Line,
@@ -6,13 +7,11 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-} from "recharts";
-import colors from "tailwindcss/colors";
-
-import { IAbacusTestSummary } from "@/lib/abacus_utils";
+} from 'recharts'
+import colors from 'tailwindcss/colors'
 
 interface AvgQuestionsProps {
-  data: IAbacusTestSummary[];
+  data: IAbacusTestSummary[]
 }
 
 const AvgQuestions = ({ data = [] }: AvgQuestionsProps) => {
@@ -47,7 +46,7 @@ const AvgQuestions = ({ data = [] }: AvgQuestionsProps) => {
         />
       </LineChart>
     </ResponsiveContainer>
-  );
-};
+  )
+}
 
-export default AvgQuestions;
+export default AvgQuestions

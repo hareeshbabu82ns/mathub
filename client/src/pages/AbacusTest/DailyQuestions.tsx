@@ -1,3 +1,4 @@
+import { IAbacusDailyTestSummary } from '@/lib/abacus_types'
 import {
   ComposedChart,
   Bar,
@@ -7,13 +8,11 @@ import {
   Legend,
   ResponsiveContainer,
   Line,
-} from "recharts";
-import colors from "tailwindcss/colors";
-
-import { IAbacusDailyTestSummary } from "@/lib/abacus_utils";
+} from 'recharts'
+import colors from 'tailwindcss/colors'
 
 interface DailyQuestionsProps {
-  data: IAbacusDailyTestSummary[];
+  data: IAbacusDailyTestSummary[]
 }
 
 const DailyQuestions = ({ data = [] }: DailyQuestionsProps) => {
@@ -59,7 +58,7 @@ const DailyQuestions = ({ data = [] }: DailyQuestionsProps) => {
         />
       </ComposedChart>
     </ResponsiveContainer>
-  );
-};
+  )
+}
 
-export default DailyQuestions;
+export default DailyQuestions

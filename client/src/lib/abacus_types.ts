@@ -5,13 +5,10 @@ export interface IAbacusSettingsData {
   totalQuestions: number
   minCount: number
   maxCount: number
-  minLengthOfDigits: number
-  maxLengthOfDigits: number
   minNumber: number
   maxNumber: number
-  minSum: number
-  maxSum: number
-  isNegativeAllowed: boolean
+  minAnswer: number
+  maxAnswer: number
   maxRetries: number
   timeLimit: number
   timeLimitPerQuestion: number
@@ -26,13 +23,10 @@ export const INIT_ABACUS_SETTINGS: IAbacusSettingsData = {
   totalQuestions: 50,
   minCount: 3,
   maxCount: 6,
-  minLengthOfDigits: 1,
-  maxLengthOfDigits: 1,
   minNumber: 1,
   maxNumber: 9,
-  minSum: 0,
-  maxSum: 100,
-  isNegativeAllowed: true,
+  minAnswer: 0,
+  maxAnswer: 100,
   maxRetries: 15,
   timeLimit: 8,
   timeLimitPerQuestion: 15,

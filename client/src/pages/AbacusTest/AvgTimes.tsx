@@ -1,3 +1,4 @@
+import { IAbacusTestSummary } from '@/lib/abacus_types'
 import {
   LineChart,
   Line,
@@ -6,13 +7,11 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-} from "recharts";
-import colors from "tailwindcss/colors";
-
-import { IAbacusTestSummary } from "@/lib/abacus_utils";
+} from 'recharts'
+import colors from 'tailwindcss/colors'
 
 interface AvgTimesProps {
-  data: IAbacusTestSummary[];
+  data: IAbacusTestSummary[]
 }
 
 const AvgTimes = ({ data = [] }: AvgTimesProps) => {
@@ -47,7 +46,7 @@ const AvgTimes = ({ data = [] }: AvgTimesProps) => {
         <Line type="monotone" dataKey="avgSkippedAnswers" stroke="#82ca9d" /> */}
       </LineChart>
     </ResponsiveContainer>
-  );
-};
+  )
+}
 
-export default AvgTimes;
+export default AvgTimes

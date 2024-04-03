@@ -18,6 +18,7 @@ import {
 import { generateAbacusQuestions } from '@/lib/abacus_utils'
 import useCountDownTimer from '@/hooks/CountDownTimer'
 import { useNavigate } from 'react-router-dom'
+import { cn } from '@/lib/utils'
 
 const AbacusTestPage = () => {
   const navigate = useNavigate()
@@ -47,8 +48,6 @@ const AbacusTestPage = () => {
       questions: testData,
       answers: answers.map((value) => ({ value })),
     }
-    // const type :'ABACUS'
-    // const test :{ type, createdAt, updatedAt, questions, answers }
     const data = await createTest({ variables })
     // console.log(data)
     navigate(`/abacus/summary/${data.data.createTest.id}`)
@@ -90,30 +89,67 @@ const AbacusTestView = ({
     onSubmitTest(testData, answers)
   }
 
-  return (
-    <div className="grid w-full items-start overflow-auto rounded-sm border">
-      <div className="border-b">
-        <div className="flex items-center justify-between p-2 px-4">
-          <div className="flex flex-col gap-2">
-            <h1 className="text-lg font-extrabold">Abacus Test</h1>
-            <h4 className="text-sm font-light">
-              {questionIndex + 1} of {settings.totalQuestions}
-            </h4>
-          </div>
-          <div className="flex items-center">
-            <TimerCircleSlider totalTime={settings.timeLimit * 60} />
-          </div>
+  const titleInfoBar = (
+    <>
+      <div className="flex items-center justify-between p-2 px-4">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-lg font-extrabold">Abacus Test</h1>
+          <h4 className="text-sm font-light">
+            {questionIndex + 1} of {settings.totalQuestions}
+          </h4>
         </div>
-        <Progress
-          className="h-1 rounded-none"
-          value={((questionIndex + 1) / settings.totalQuestions) * 100}
-        />
+        <div className="flex items-center">
+          <TimerCircleSlider totalTime={settings.timeLimit * 60} />
+        </div>
       </div>
+      <Progress
+        className="h-1 rounded-none"
+        value={((questionIndex + 1) / settings.totalQuestions) * 100}
+      />
+    </>
+  )
+
+  const actionButtons = (
+    <div className="flex items-center justify-between border-t px-4 py-2 md:py-4">
+      <div>
+        <Button
+          variant={'outline'}
+          size={'sm'}
+          disabled={questionIndex === 0}
+          onClick={() => setQuestionIndex(questionIndex - 1)}
+        >
+          <PreviousIcon className="h-8 w-8" />
+        </Button>
+      </div>
+      <div>
+        {questionIndex === settings.totalQuestions - 1 && (
+          <Button variant={'outline'} size={'sm'} onClick={handleSubmit}>
+            Subbmit
+          </Button>
+        )}
+      </div>
+      <div>
+        <Button
+          variant={'outline'}
+          size={'sm'}
+          disabled={questionIndex === settings.totalQuestions - 1}
+          onClick={() => setQuestionIndex(questionIndex + 1)}
+        >
+          <NextIcon className="h-8 w-8" />
+        </Button>
+      </div>
+    </div>
+  )
+
+  return (
+    // <div className="grid h-full w-full items-start overflow-auto rounded-sm border">
+    <div className="flex h-full flex-col rounded-sm border">
+      {titleInfoBar}
       <QAView
         key={`qaview-${questionIndex}`}
+        className="flex-grow"
         question={testData[questionIndex].question}
         choices={testData[questionIndex].choices}
-        // answer={testData[questionIndex].answer}
         selectedAnswer={answers[questionIndex]}
         timeLimit={settings.timeLimitPerQuestion}
         onSelected={(choice) => {
@@ -122,34 +158,8 @@ const AbacusTestView = ({
           setAnswers(newAnswers)
         }}
       />
-      <div className="flex items-center justify-between border-t p-4">
-        <div>
-          <Button
-            variant={'outline'}
-            disabled={questionIndex === 0}
-            onClick={() => setQuestionIndex(questionIndex - 1)}
-          >
-            <PreviousIcon className="h-8 w-8" />
-          </Button>
-        </div>
-        <div>
-          {questionIndex === settings.totalQuestions - 1 && (
-            <Button variant={'outline'} onClick={handleSubmit}>
-              Subbmit
-            </Button>
-          )}
-        </div>
-        <div>
-          <Button
-            variant={'outline'}
-            disabled={questionIndex === settings.totalQuestions - 1}
-            onClick={() => setQuestionIndex(questionIndex + 1)}
-          >
-            <NextIcon className="h-8 w-8" />
-          </Button>
-        </div>
-      </div>
-      <pre className="border-t p-4">{JSON.stringify(settings, null, 2)}</pre>
+      {actionButtons}
+      {/* <pre className="border-t p-4">{JSON.stringify(settings, null, 2)}</pre> */}
     </div>
   )
 }
@@ -157,34 +167,31 @@ const AbacusTestView = ({
 const QAView = ({
   question,
   choices,
-  // answer,
   selectedAnswer,
   timeLimit,
   onSelected,
+  className,
 }: {
   question: number[]
   choices: number[]
-  // answer?: number | undefined
   timeLimit?: number
   selectedAnswer?: string | undefined
   onSelected: (choice: number) => void
+  className?: string
 }) => {
   const [timeLeft] = useCountDownTimer(timeLimit || 0)
   return (
-    <div className="flex w-full flex-col">
-      <div className="m-auto p-4">
-        <div className="flex flex-col items-end gap-6 tracking-[1rem]">
+    <div className={cn('flex w-full flex-col', className)}>
+      <div className="m-auto flex-1 p-4">
+        <div className="flex flex-col items-end gap-4 tracking-[0.7rem] md:gap-6 md:tracking-[1rem]">
           {question.map((n, i) => (
-            <div key={i} className="font-mono text-4xl">
+            <div key={i} className="font-mono text-3xl md:text-4xl">
               {n}
             </div>
           ))}
         </div>
       </div>
-      <Progress
-        className="h-1 rounded-none"
-        value={(timeLeft / (timeLimit || 0)) * 100}
-      />
+      <div className="border-t" />
       <ToggleGroup
         className="m-auto grid grid-cols-4 gap-4 p-4"
         type="single"
@@ -195,13 +202,17 @@ const QAView = ({
         {choices.map((c, i) => (
           <ToggleGroupItem
             key={i}
-            className="col-span-2 h-28 w-28 border text-2xl md:col-span-1"
+            className="col-span-1 h-16 w-16 border text-xl md:h-28 md:w-28 md:text-2xl"
             value={`${c}`}
           >
             {c}
           </ToggleGroupItem>
         ))}
       </ToggleGroup>
+      <Progress
+        className="h-0.5 rounded-none"
+        value={100 - (timeLeft / (timeLimit || 0)) * 100}
+      />
     </div>
   )
 }

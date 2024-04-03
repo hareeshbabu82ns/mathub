@@ -15,7 +15,6 @@ import {
 } from '@/components/ui/form'
 // import { z } from 'zod'
 import { Slider } from '@/components/ui/slider'
-import { Switch } from '@/components/ui/switch'
 import { IAbacusSettingsData, INIT_ABACUS_SETTINGS } from '@/lib/abacus_types'
 import { useForm, useFormContext } from 'react-hook-form'
 import { useMutation, useQuery } from '@apollo/client'
@@ -117,10 +116,10 @@ const AbacusSettingsPage = () => {
 export default AbacusSettingsPage
 
 interface IFormProps {
+  questionLengthRange: [number, number]
+  answerRange: [number, number]
   numberRange: [number, number]
-  digitRange: [number, number]
   totalQuestions: [number]
-  isNegativeAllowed: boolean
   timeLimit: [number]
   timeLimitPerQuestion: [number]
 }
@@ -136,11 +135,13 @@ const SettingsForm = ({
 }) => {
   const onSubmitForm = (formData: IFormProps) => {
     const res = {
-      ...formData,
+      // ...formData,
+      minCount: formData.questionLengthRange[0],
+      maxCount: formData.questionLengthRange[1],
+      minAnswer: formData.answerRange[0],
+      maxAnswer: formData.answerRange[1],
       minNumber: formData.numberRange[0],
       maxNumber: formData.numberRange[1],
-      minLengthOfDigits: formData.digitRange[0],
-      maxLengthOfDigits: formData.digitRange[1],
       totalQuestions: formData.totalQuestions[0],
       timeLimit: formData.timeLimit[0],
       timeLimitPerQuestion: formData.timeLimitPerQuestion[0],
@@ -151,14 +152,11 @@ const SettingsForm = ({
 
   const formData = useForm<IFormProps>({
     defaultValues: {
-      isNegativeAllowed: initSettings.isNegativeAllowed,
       timeLimit: [initSettings.timeLimit],
       timeLimitPerQuestion: [initSettings.timeLimitPerQuestion],
+      answerRange: [initSettings.minAnswer, initSettings.maxAnswer],
       numberRange: [initSettings.minNumber, initSettings.maxNumber],
-      digitRange: [
-        initSettings.minLengthOfDigits,
-        initSettings.maxLengthOfDigits,
-      ],
+      questionLengthRange: [initSettings.minCount, initSettings.maxCount],
       totalQuestions: [initSettings.totalQuestions],
     },
     // resolver: zodResolver(formSchema),
@@ -202,7 +200,7 @@ const SettingsForm = ({
 const SettingsFields = () => {
   const { control } = useFormContext()
   return (
-    <div className="grid gap-6 p-4 py-8 md:grid-cols-2 lg:px-8">
+    <div className="grid grid-cols-1 gap-6 p-4 py-8 md:grid-cols-2 lg:px-8">
       {/* totalQuestions */}
       <div className="grid gap-3">
         <FormField
@@ -238,60 +236,61 @@ const SettingsFields = () => {
               <FormControl>
                 <Slider
                   {...field}
-                  min={1}
+                  min={-50}
                   step={5}
+                  max={50}
                   onValueChange={field.onChange}
                 />
               </FormControl>
               <FormDescription>
-                Min and Max range of each generated numbers. If -ve allowed then
-                Min value goes -Min.
+                Range of each Number in a Question.
               </FormDescription>
               <FormMessage>{error?.message}</FormMessage>
             </FormItem>
           )}
         />
       </div>
-      {/* digitRange */}
+      {/* questionLengthRange */}
       <div className="grid gap-3">
         <FormField
           control={control}
-          name="digitRange"
+          name="questionLengthRange"
           render={({ field, fieldState: { error } }) => (
             <FormItem>
-              <FormLabel>Digits Range {`[${field.value}]`}</FormLabel>
+              <FormLabel>Question Length Range {`[${field.value}]`}</FormLabel>
               <FormControl>
                 <Slider
                   {...field}
-                  min={1}
-                  max={5}
+                  min={2}
+                  step={1}
+                  max={10}
                   onValueChange={field.onChange}
                 />
               </FormControl>
-              <FormDescription>
-                Min and Max Digits of each generated number. If -ve allowed then
-                Min value goes -Min.
-              </FormDescription>
+              <FormDescription>Total Numbers in each Question.</FormDescription>
               <FormMessage>{error?.message}</FormMessage>
             </FormItem>
           )}
         />
       </div>
-      {/* isNegativeAllowed */}
+      {/* answerRange */}
       <div className="grid gap-3">
         <FormField
           control={control}
-          name="isNegativeAllowed"
+          name="answerRange"
           render={({ field, fieldState: { error } }) => (
             <FormItem>
+              <FormLabel>Answer Range {`[${field.value}]`}</FormLabel>
               <FormControl>
-                <Switch
+                <Slider
                   {...field}
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
+                  min={0}
+                  step={5}
+                  max={100}
+                  onValueChange={field.onChange}
                 />
               </FormControl>
-              <FormDescription>Generate -ve Numbers.</FormDescription>
+              <FormDescription>Answer for each Question.</FormDescription>
               <FormMessage>{error?.message}</FormMessage>
             </FormItem>
           )}
@@ -315,7 +314,7 @@ const SettingsFields = () => {
                 />
               </FormControl>
               <FormDescription>
-                8min for 100 questions is the base (4.8 sec per question).
+                8min for 100 questions is the base.
               </FormDescription>
               <FormMessage>{error?.message}</FormMessage>
             </FormItem>
@@ -339,7 +338,9 @@ const SettingsFields = () => {
                   onValueChange={field.onChange}
                 />
               </FormControl>
-              <FormDescription>4.8 sec per question</FormDescription>
+              <FormDescription>
+                4.8 sec per question is the base.
+              </FormDescription>
               <FormMessage>{error?.message}</FormMessage>
             </FormItem>
           )}
