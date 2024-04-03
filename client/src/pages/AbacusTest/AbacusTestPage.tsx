@@ -10,15 +10,18 @@ import {
 } from '@/lib/abacus_types'
 import { FETCH_TEST_SETTINGS, ADD_TEST } from '@/lib/gql_queries'
 import { useMutation, useQuery } from '@apollo/client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   ArrowBigLeftDash as PreviousIcon,
   ArrowBigRightDash as NextIcon,
+  PlayCircle as PlayIcon,
+  StopCircle as StopIcon,
 } from 'lucide-react'
 import { generateAbacusQuestions } from '@/lib/abacus_utils'
 import useCountDownTimer from '@/hooks/CountDownTimer'
 import { useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
+import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis'
 
 const AbacusTestPage = () => {
   const navigate = useNavigate()
@@ -78,6 +81,8 @@ const AbacusTestView = ({
   settings: IAbacusSettingsData
   onSubmitTest: (testData: IAbacusQuestionData[], answers: string[]) => void
 }) => {
+  const { speak, stop, status } = useSpeechSynthesis()
+
   const [questionIndex, setQuestionIndex] = useState(0)
   const [answers, setAnswers] = useState<string[]>(
     Array(settings.totalQuestions).fill(''),
@@ -89,14 +94,32 @@ const AbacusTestView = ({
     onSubmitTest(testData, answers)
   }
 
+  const playPauseButton =
+    status !== 'speaking' ? (
+      <Button
+        size={'sm'}
+        variant={'ghost'}
+        onClick={() => speak(testData[questionIndex].question.join(', '))}
+      >
+        <PlayIcon />
+      </Button>
+    ) : (
+      <Button size={'sm'} variant={'ghost'} onClick={() => stop()}>
+        <StopIcon />
+      </Button>
+    )
+
   const titleInfoBar = (
     <>
       <div className="flex items-center justify-between p-2 px-4">
         <div className="flex flex-col gap-2">
           <h1 className="text-lg font-extrabold">Abacus Test</h1>
-          <h4 className="text-sm font-light">
-            {questionIndex + 1} of {settings.totalQuestions}
-          </h4>
+          <div className="flex items-center gap-4">
+            <h4 className="text-sm font-light">
+              {questionIndex + 1} of {settings.totalQuestions}
+            </h4>
+            {playPauseButton}
+          </div>
         </div>
         <div className="flex items-center">
           <TimerCircleSlider totalTime={settings.timeLimit * 60} />
@@ -179,7 +202,17 @@ const QAView = ({
   onSelected: (choice: number) => void
   className?: string
 }) => {
+  const { speak } = useSpeechSynthesis()
   const [timeLeft] = useCountDownTimer(timeLimit || 0)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      speak(question.join('. '))
+    }, 500) // Wait for 0.5 seconds before starting
+    return () => clearTimeout(timer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <div className={cn('flex w-full flex-col', className)}>
       <div className="m-auto flex-1 p-4">

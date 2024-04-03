@@ -1,10 +1,10 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { Toaster } from "@/components/ui/sonner";
-import { ThemeProvider } from "@/components/theme-provider";
-import { BrowserRouter, useNavigate } from "react-router-dom";
-import { RouterProvider } from "react-aria-components";
-import { onError } from "@apollo/client/link/error";
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { Toaster } from '@/components/ui/sonner'
+import { ThemeProvider } from '@/components/theme-provider'
+import { BrowserRouter, useNavigate } from 'react-router-dom'
+import { RouterProvider } from 'react-aria-components'
+import { onError } from '@apollo/client/link/error'
 import {
   ApolloProvider,
   ApolloClient,
@@ -12,14 +12,15 @@ import {
   ApolloLink,
   InMemoryCache,
   concat,
-} from "@apollo/client";
+} from '@apollo/client'
 
-import App from "./App.tsx";
-import "./index.css";
-import { TooltipProvider } from "@/components/ui/tooltip.tsx";
-import { toast } from "sonner";
+import App from './App.tsx'
+import './index.css'
+import { TooltipProvider } from '@/components/ui/tooltip.tsx'
+import { toast } from 'sonner'
+import { SpeechSynthesisProvider } from './hooks/useSpeechSynthesis.tsx'
 
-const httpLink = new HttpLink({ uri: "/graphql" });
+const httpLink = new HttpLink({ uri: '/graphql' })
 
 const connectionHeaderMiddleware = new ApolloLink((operation, forward) => {
   // add connection name http header before each request
@@ -28,10 +29,10 @@ const connectionHeaderMiddleware = new ApolloLink((operation, forward) => {
       ...headers,
       // authorization: localStorage.getItem('token') || null,
     },
-  }));
+  }))
 
-  return forward(operation);
-});
+  return forward(operation)
+})
 
 // // format date in the response
 // const formatDateLink = new ApolloLink((operation, forward) => {
@@ -45,31 +46,33 @@ const connectionHeaderMiddleware = new ApolloLink((operation, forward) => {
 
 const errorLink = onError(({ networkError }) => {
   if (networkError?.message) {
-    toast.error(networkError.message);
+    toast.error(networkError.message)
   }
-});
+})
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: errorLink.concat(concat(connectionHeaderMiddleware, httpLink)),
-});
+})
 
 export const BaseApp = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   return (
     <ApolloProvider client={client}>
-      <RouterProvider navigate={navigate}>
-        <TooltipProvider>
-          <App />
-        </TooltipProvider>
-      </RouterProvider>
+      <SpeechSynthesisProvider>
+        <RouterProvider navigate={navigate}>
+          <TooltipProvider>
+            <App />
+          </TooltipProvider>
+        </RouterProvider>
+      </SpeechSynthesisProvider>
       <Toaster />
     </ApolloProvider>
-  );
-};
+  )
+}
 
-const rootElement = document.getElementById("root");
-const root = ReactDOM.createRoot(rootElement!);
+const rootElement = document.getElementById('root')
+const root = ReactDOM.createRoot(rootElement!)
 
 root.render(
   <React.StrictMode>
@@ -79,4 +82,4 @@ root.render(
       </BrowserRouter>
     </ThemeProvider>
   </React.StrictMode>,
-);
+)
