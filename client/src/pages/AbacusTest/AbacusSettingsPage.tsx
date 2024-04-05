@@ -26,6 +26,7 @@ import {
 import WithLoaderErrorOverlay from '@/components/WithLoaderErrorOverlay'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import AbacusTestListPage from './AbacusTestListPage'
 
 // const formSchema = z.object({
 //   username: z
@@ -109,6 +110,7 @@ const AbacusSettingsPage = () => {
           ...data?.testsettings[0]?.settings,
         }}
       />
+      <AbacusTestListPage />
     </WithLoaderErrorOverlay>
   )
 }
