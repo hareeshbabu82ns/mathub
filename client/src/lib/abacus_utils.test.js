@@ -9,6 +9,11 @@ import { generateRandomLengthNumber, generateRandomNumber } from './utils'
 describe('Abacus Generation Tests', () => {
   describe('General', () => {
     test('should check for isMinusBigFriends', () => {
+      expect(isMinusBigFriends(18, -6)).toBe(false)
+      expect(isMinusBigFriends(14, -5)).toBe(true)
+      expect(isMinusBigFriends(22, -7)).toBe(true)
+      expect(isMinusBigFriends(6, -2)).toBe(true)
+      expect(isMinusBigFriends(22, -4)).toBe(true)
       expect(isMinusBigFriends(22, -2)).toBe(false)
       expect(isMinusBigFriends(10, 5)).toBe(false)
       expect(isMinusBigFriends(10, -5)).toBe(true)
@@ -121,7 +126,7 @@ describe('Abacus Generation Tests', () => {
       const res = generateAbacusQuestions(params)
       // console.log('questions all constraints', res);
       expect(res.length).toBe(params.totalQuestions)
-      res.forEach((qSet, idx) => {
+      res.forEach((qSet) => {
         // console.log(`all constraints: question ${idx}:\n`, qSet.question);
         expect(qSet.question.length).toBeGreaterThanOrEqual(params.minCount)
         expect(qSet.question.length).toBeLessThanOrEqual(params.maxCount)

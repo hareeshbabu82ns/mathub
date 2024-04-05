@@ -18,7 +18,11 @@ export function isMinusBigFriends(sum: number, randomNumber: number) {
     .toString()
     .padStart(sumStr.length, '0')
   for (let i = 0; i < randomNumberStr.length; i++) {
-    if (Number(randomNumberStr[i]) >= 5 && Number(sumStr[i]) < 5) {
+    const numSum = Number(sumStr[i])
+    const numRandom = Number(randomNumberStr[i])
+    if (numRandom > numSum) {
+      return true
+    } else if (numSum % 5 < numRandom % 5) {
       return true
     }
   }
