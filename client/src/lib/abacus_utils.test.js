@@ -1,9 +1,23 @@
 import { describe, expect, test } from 'vitest'
-import { generateAbacusNumbers, generateAbacusQuestions } from './abacus_utils'
+import {
+  generateAbacusNumbers,
+  generateAbacusQuestions,
+  isMinusBigFriends,
+} from './abacus_utils'
 import { generateRandomLengthNumber, generateRandomNumber } from './utils'
 
 describe('Abacus Generation Tests', () => {
   describe('General', () => {
+    test('should check for isMinusBigFriends', () => {
+      expect(isMinusBigFriends(22, -2)).toBe(false)
+      expect(isMinusBigFriends(10, 5)).toBe(false)
+      expect(isMinusBigFriends(10, -5)).toBe(true)
+      expect(isMinusBigFriends(143, -35)).toBe(true)
+      expect(isMinusBigFriends(143, -80)).toBe(true)
+      expect(isMinusBigFriends(34, -6)).toBe(true)
+      expect(isMinusBigFriends(30, -15)).toBe(true)
+    })
+
     test('should generate random length numbers with all constraints', () => {
       const maxGen = 50
       for (let i = 0; i < maxGen; i++) {
@@ -59,6 +73,7 @@ describe('Abacus Generation Tests', () => {
           minCount: generateRandomNumber({ min: 3, max: 6 }),
           maxCount: 0,
         }
+        params.maxNumber = generateRandomNumber({ min: 5, max: 50 })
         params.maxCount =
           generateRandomNumber({ min: 3, max: 6 }) + params.minCount
         const res = generateAbacusNumbers(params)
@@ -80,34 +95,12 @@ describe('Abacus Generation Tests', () => {
       }
     })
 
-    // test('should return each number with digits length between 3 and 6', () => {
-    //   for (let i = 0; i < 10; i++) {
-    //     const params = {
-    //       minLengthOfDigits: generateRandomNumber({ min: 1, max: 2 }),
-    //       maxLengthOfDigits: 0,
-    //     }
-    //     params.maxLengthOfDigits =
-    //       generateRandomNumber({ min: 1, max: 2 }) + params.minLengthOfDigits
-    //     const res = generateAbacusNumbers(params)
-    //     // console.log('digit lengths', params, res);
-    //     expect(res[0]).toBeGreaterThan(0)
-    //     res.forEach((num) => {
-    //       expect(Math.abs(num).toString().length).toBeGreaterThanOrEqual(
-    //         params.minLengthOfDigits,
-    //       )
-    //       expect(Math.abs(num).toString().length).toBeLessThanOrEqual(
-    //         params.maxLengthOfDigits,
-    //       )
-    //       expect(num).not.toEqual(0)
-    //     })
-    //   }
-    // })
-
     test('should return numbers with sum less than or equal to maxAnswer', () => {
       for (let i = 0; i < 50; i++) {
         const params = {
           maxAnswer: generateRandomNumber({ min: 10, max: 100 }),
         }
+        params.maxNumber = params.maxAnswer
         const res = generateAbacusNumbers(params)
         const sum = res.reduce((acc, num) => acc + num, 0)
         // console.log('sum less than or equal to maxAnswer', params.maxAnswer, sum, res);
@@ -128,8 +121,8 @@ describe('Abacus Generation Tests', () => {
       const res = generateAbacusQuestions(params)
       // console.log('questions all constraints', res);
       expect(res.length).toBe(params.totalQuestions)
-      res.forEach((qSet) => {
-        // console.log(`all constraints: question ${idx}:\n`, question);
+      res.forEach((qSet, idx) => {
+        // console.log(`all constraints: question ${idx}:\n`, qSet.question);
         expect(qSet.question.length).toBeGreaterThanOrEqual(params.minCount)
         expect(qSet.question.length).toBeLessThanOrEqual(params.maxCount)
         const sum = qSet.question.reduce((acc, num) => acc + num, 0)
@@ -140,6 +133,8 @@ describe('Abacus Generation Tests', () => {
         // expect(question.question.some((num) => num < 0)).toBe(true);
         let sumCalc = 0
         qSet.question.forEach((num) => {
+          expect(isMinusBigFriends(sumCalc, num)).toBe(false)
+
           sumCalc += num
           // if (sumCalc < 0) console.log(question.question);
           expect(sumCalc).toBeGreaterThanOrEqual(0)

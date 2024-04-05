@@ -24,8 +24,12 @@ export function generateRandomNumber({
   let retries = 0
   let randomNumber = 0
 
+  const maxNumFactor = Math.pow(10, max.toString().length)
+
   do {
-    randomNumber = Math.floor(Math.random() * (max - min + 1)) + min
+    // randomNumber = Math.floor(Math.random() * (max - min + 1)) + min
+    randomNumber =
+      (Math.round(Math.random() * maxNumFactor) % (max - min + 1)) + min
 
     if (zeroAllowed || randomNumber !== 0) {
       return randomNumber

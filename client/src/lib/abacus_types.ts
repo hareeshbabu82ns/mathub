@@ -46,6 +46,7 @@ export interface IAbacusQuestionData {
 
 export interface IAbacusTestSummary {
   id: string
+  type: string
   dateShort: string
   timeTaken: number
   totalQuestions: number
@@ -60,6 +61,7 @@ export interface IAbacusTestSummary {
 }
 export interface IAbacusTestData {
   id: string
+  type: string
   createdAt: string
   updatedAt: string
   questions: IAbacusQuestionData[]

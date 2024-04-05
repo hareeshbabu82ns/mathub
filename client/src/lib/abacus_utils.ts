@@ -9,6 +9,22 @@ import {
 } from './abacus_types'
 import { generateRandomNumber } from './utils'
 
+export function isMinusBigFriends(sum: number, randomNumber: number) {
+  // for each digit in randomNumber, if its grater than equals 5, corresponding digit in sum should be graeter than equals 5
+  // example: sum = 1295, randomNumber = 675, 0 <= 1 (false), 6 >= 2 (true), 7 <= 9 (false), 5 >= 5 (false)
+  if (randomNumber >= 0) return false
+  const sumStr = sum.toString()
+  const randomNumberStr = Math.abs(randomNumber)
+    .toString()
+    .padStart(sumStr.length, '0')
+  for (let i = 0; i < randomNumberStr.length; i++) {
+    if (Number(randomNumberStr[i]) >= 5 && Number(sumStr[i]) < 5) {
+      return true
+    }
+  }
+  return false
+}
+
 function isValidRandom({
   numbers,
   randomNumber,
@@ -39,11 +55,10 @@ function isValidRandom({
     return false
 
   const sum = numbers.reduce((acc, num) => acc + num, randomNumber)
-  if (sum > maxAnswer) return false
-  if (sum < 0) {
-    // console.log('sum', sum);
-    return false
-  }
+  if (sum < 0 || sum > maxAnswer) return false
+  // Temp: avoid -BigFriends as Laasya is not comfortable with it
+  if (isMinusBigFriends(sum - randomNumber, randomNumber)) return false
+
   if (index === count && sum < minAnswer) return false
   // if (maxAnswer - randomNumber < minAnswer) return false;
   return true
@@ -66,7 +81,7 @@ export function generateAbacusNumbers({
   maxAnswer: number
   maxRetries?: number
 }) {
-  const numbers = []
+  const numbers: number[] = []
 
   if (minNumber > maxNumber) {
     throw new Error('maxNumber should be greater than minNumber')
@@ -78,45 +93,32 @@ export function generateAbacusNumbers({
     )
   }
 
-  const count = Math.floor(Math.random() * (maxCount - minCount + 1)) + minCount
+  const count = generateRandomNumber({ min: minCount, max: maxCount })
 
   for (let i = 0; i < count; i++) {
-    let randomNumber = 0,
-      retryCount = 0
-    do {
+    let randomNumber = 0
+    let retryCount = 0
+    // const sum = numbers.reduce((acc, num) => acc + num, 0)
+    for (; retryCount < maxRetries; retryCount++) {
       randomNumber = generateRandomNumber({
         min: minNumber,
         max: maxNumber,
       })
-      if (randomNumber !== 0 && i === count - 1) {
-        // last number
-        const sum = numbers.reduce((acc, num) => acc + num, randomNumber)
-        if (sum > maxAnswer) {
-          // console.log('last number before', randomNumber);
-          randomNumber = randomNumber - (sum - maxAnswer)
-          // console.log('last number after', randomNumber);
-        } else if (sum < minAnswer) {
-          // console.log('last number before', randomNumber);
-          randomNumber = randomNumber + (minAnswer - sum)
-          // console.log('last number after', randomNumber);
-        }
+      // if (randomNumber !== 0 && i === count - 1) {
+      //   // last number
+      //   const sumWithRandomNumber = sum + randomNumber
+      //   if (sumWithRandomNumber > maxAnswer) {
+      //     // console.log('last number before', randomNumber);
+      //     randomNumber = randomNumber - (sumWithRandomNumber - maxAnswer)
+      //     // console.log('last number after', randomNumber);
+      //   } else if (sumWithRandomNumber < minAnswer) {
+      //     // console.log('last number before', randomNumber);
+      //     randomNumber = randomNumber + (minAnswer - sumWithRandomNumber)
+      //     // console.log('last number after', randomNumber);
+      //   }
+      // }
 
-        // const len = Math.abs(randomNumber).toString().length
-        // if (len > maxLengthOfDigits) {
-        //   // console.log('last number before', randomNumber);
-        //   randomNumber = Math.floor(
-        //     randomNumber / Math.pow(10, len - maxLengthOfDigits),
-        //   )
-        // } else if (len < minLengthOfDigits) {
-        //   // console.log('last number before', randomNumber);
-        //   randomNumber = Math.floor(
-        //     randomNumber * Math.pow(10, minLengthOfDigits - len),
-        //   )
-        // }
-      }
-      retryCount++
-    } while (
-      !isValidRandom({
+      const isValidNumber = isValidRandom({
         numbers,
         randomNumber,
         minAnswer,
@@ -125,11 +127,23 @@ export function generateAbacusNumbers({
         count,
         minNumber,
         maxNumber,
-      }) &&
-      retryCount < maxRetries
-    )
-    numbers.push(randomNumber)
+      })
+
+      if (isValidNumber) {
+        numbers.push(randomNumber)
+        break
+      }
+    }
     // remainingSum -= randomNumber;
+    // if (retryCount >= maxRetries) {
+    // console.log(
+    //   'generateAbacusNumbers: retryMax',
+    //   retryCount,
+    //   minNumber,
+    //   maxNumber,
+    //   randomNumber,
+    // )
+    // }
   }
 
   return numbers
@@ -185,7 +199,7 @@ export function generateAbacusQuestions({
     } while (retries < maxRetries)
 
     // generate answers randomly and add sum to the answers in random place
-    const randomIndex = Math.floor(Math.random() * 1000) % 4
+    const randomIndex = Math.round(Math.random() * 100) % 4
     const answer = numbers.reduce((acc, num) => acc + num, 0)
     const min = Math.max(0, answer - 10)
     const max = Math.min(maxAnswer, min + answer + 10)
@@ -266,6 +280,7 @@ export const abacusTestSummary = (data: IAbacusTestData) => {
 
   return {
     id: data.id,
+    type: data.type,
     dateShort: format(data.createdAt, 'MMM dd'),
     timeTaken,
     totalQuestions,
@@ -316,273 +331,3 @@ export const collectiveSummary = (data: IAbacusTestData[] = []) => {
     dailySeries,
   } satisfies IAbacusCollectiveTestSummary
 }
-
-// function isValidRandom({
-//   numbers,
-//   randomNumber,
-//   minAnswer,
-//   maxAnswer,
-//   index,
-//   count,
-//   minLengthOfDigits,
-//   maxLengthOfDigits,
-// }: {
-//   numbers: number[]
-//   randomNumber: number
-//   minAnswer: number
-//   maxAnswer: number
-//   index: number
-//   count: number
-//   minLengthOfDigits: number
-//   maxLengthOfDigits: number
-// }) {
-//   if (randomNumber === 0 || maxAnswer - randomNumber === 0) return false
-//   // if (Math.abs(randomNumber) > Math.round((maxAnswer - minAnswer) / 4)) return false;
-//   // if (Math.abs(randomNumber) > Math.round((maxAnswer - minAnswer) * 0.3)) return false;
-//   const numLength = Math.abs(randomNumber).toString().length
-//   if (numLength < minLengthOfDigits || numLength > maxLengthOfDigits) {
-//     console.log('numLength', numLength, minLengthOfDigits, maxLengthOfDigits)
-//     return false
-//   }
-
-//   if (numbers.length === 0 && randomNumber <= 0) return false
-//   // check sum of previous number and current number less than 0
-//   // if (numbers.length > 0 && numbers[numbers.length - 1] + randomNumber < 0) return false;
-
-//   //check for repeating numbers more than 2 times
-//   if (
-//     numbers.length > 1 &&
-//     Math.abs(numbers[numbers.length - 1]) === Math.abs(randomNumber)
-//   )
-//     return false
-
-//   const sum = numbers.reduce((acc, num) => acc + num, randomNumber)
-//   if (sum > maxAnswer) return false
-//   if (sum < 0) {
-//     // console.log('sum', sum);
-//     return false
-//   }
-//   if (index === count && sum < minAnswer) return false
-//   // if (maxAnswer - randomNumber < minAnswer) return false;
-//   return true
-// }
-
-// export function generateAbacusNumbers({
-//   minCount = 3,
-//   maxCount = 6,
-//   minLengthOfDigits = 1,
-//   maxLengthOfDigits = 1,
-//   minNumber: minDigit = 1,
-//   maxNumber: maxDigit,
-//   minAnswer,
-//   maxAnswer,
-//   negativesAllowed = true,
-//   maxRetries = 15,
-// }: {
-//   minCount?: number
-//   maxCount?: number
-//   minLengthOfDigits?: number
-//   maxLengthOfDigits?: number
-//   minNumber?: number
-//   maxNumber: number
-//   minAnswer: number
-//   maxAnswer: number
-//   negativesAllowed?: boolean
-//   maxRetries?: number
-// }) {
-//   const numbers = []
-
-//   if (
-//     minLengthOfDigits < 1 ||
-//     maxLengthOfDigits < 1 ||
-//     minLengthOfDigits > maxLengthOfDigits
-//   ) {
-//     throw new Error(
-//       'minLengthOfDigits and maxLengthOfDigits should be greater than 0 and minLengthOfDigits <= maxLengthOfDigits',
-//     )
-//   } else if (minAnswer > maxAnswer) {
-//     throw new Error('minAnswer should be less than or equal to maxAnswer')
-//   } else if (minCount < 1 || maxCount < 1 || minCount > maxCount) {
-//     throw new Error(
-//       'minCount and maxCount should be greater than 0 and minCount <= maxCount',
-//     )
-//   }
-
-//   // find min and max numbers based on minLengthOfDigits and maxLengthOfDigits
-//   const minNumber = Math.pow(10, minLengthOfDigits - 1)
-//   // const minNumber = minLengthOfDigits === 1 ? 1 : Math.pow(10, minLengthOfDigits - 1);
-//   const maxNumber = Math.pow(10, maxLengthOfDigits) - 1
-
-//   if (maxDigit && (maxDigit > maxNumber || maxDigit < minNumber)) {
-//     throw new Error(
-//       `maxDigit ${maxDigit} should be between ${minNumber} and ${maxNumber}`,
-//     )
-//   }
-
-//   if (minDigit && (minDigit > maxNumber || minDigit < minNumber)) {
-//     throw new Error(
-//       `minDigit ${minDigit} should be between ${minNumber} and ${maxNumber}`,
-//     )
-//   }
-
-//   const count = Math.floor(Math.random() * (maxCount - minCount + 1)) + minCount
-
-//   for (let i = 0; i < count; i++) {
-//     let randomNumber = 0,
-//       retryCount = 0
-//     do {
-//       // if (retryCount > 0)
-//       //   console.log(
-//       //     `retrying ${retryCount} randomNumber: ${randomNumber} remainingSum: ${maxAnswer} diff: ${
-//       //       maxAnswer - randomNumber
-//       //     }`,
-//       //   );
-
-//       randomNumber = generateRandomLengthNumber({
-//         minLengthOfDigits,
-//         maxLengthOfDigits,
-//         minNumber: minNumber,
-//         maxNumber: Math.min(maxDigit, maxNumber),
-//         // minNumber: negativesAllowed ? -maxDigit : 1,
-//         // maxNumber: maxDigit,
-//         negativesAllowed: negativesAllowed && i !== 0,
-//       })
-//       if (randomNumber !== 0 && i === count - 1) {
-//         // last number
-//         const sum = numbers.reduce((acc, num) => acc + num, randomNumber)
-//         if (sum > maxAnswer) {
-//           // console.log('last number before', randomNumber);
-//           randomNumber = randomNumber - (sum - maxAnswer)
-//           // console.log('last number after', randomNumber);
-//         } else if (sum < minAnswer) {
-//           // console.log('last number before', randomNumber);
-//           randomNumber = randomNumber + (minAnswer - sum)
-//           // console.log('last number after', randomNumber);
-//         }
-
-//         const len = Math.abs(randomNumber).toString().length
-//         if (len > maxLengthOfDigits) {
-//           // console.log('last number before', randomNumber);
-//           randomNumber = Math.floor(
-//             randomNumber / Math.pow(10, len - maxLengthOfDigits),
-//           )
-//         } else if (len < minLengthOfDigits) {
-//           // console.log('last number before', randomNumber);
-//           randomNumber = Math.floor(
-//             randomNumber * Math.pow(10, minLengthOfDigits - len),
-//           )
-//         }
-//       }
-//       retryCount++
-//     } while (
-//       !isValidRandom({
-//         numbers,
-//         randomNumber,
-//         minAnswer,
-//         maxAnswer,
-//         index: i,
-//         count,
-//         minLengthOfDigits,
-//         maxLengthOfDigits,
-//       }) &&
-//       retryCount < maxRetries
-//     )
-//     numbers.push(randomNumber)
-//     // remainingSum -= randomNumber;
-//   }
-
-//   return numbers
-// }
-
-// export function generateAbacusQuestions({
-//   totalQuestions = 10,
-//   minCount = 3,
-//   maxCount = 6,
-//   minLengthOfDigits = 1,
-//   maxLengthOfDigits = 1,
-//   maxNumber,
-//   minAnswer,
-//   maxAnswer,
-//   isNegativeAllowed = true,
-//   maxRetries = 15,
-// }: {
-//   totalQuestions: number
-//   minCount: number
-//   maxCount: number
-//   minLengthOfDigits: number
-//   maxLengthOfDigits: number
-//   maxNumber: number
-//   minAnswer: number
-//   maxAnswer: number
-//   isNegativeAllowed: boolean
-//   maxRetries: number
-// }) {
-//   const questions: IAbacusQuestionData[] = []
-//   for (let i = 0; i < totalQuestions; i++) {
-//     let numbers
-
-//     let retries = 0
-//     do {
-//       numbers = generateAbacusNumbers({
-//         minCount,
-//         maxCount,
-//         minLengthOfDigits,
-//         maxLengthOfDigits,
-//         maxNumber,
-//         minAnswer,
-//         maxAnswer,
-//         negativesAllowed: isNegativeAllowed,
-//         maxRetries,
-//       })
-
-//       // check if numbers sum ever goes below zero
-//       let sum = 0
-//       const hasNegative = numbers.some((num) => {
-//         sum += num
-//         if (sum < 0) {
-//           // console.log('sum < 0', sum, arr);
-//           return true
-//         }
-//         return false
-//       })
-//       retries++
-//       if (!hasNegative) break
-//     } while (retries < maxRetries)
-
-//     // generate answers randomly and add sum to the answers in random place
-//     const randomIndex = Math.floor(Math.random() * 1000) % 4
-//     const answer = numbers.reduce((acc, num) => acc + num, 0)
-//     const min = Math.max(0, answer - 10)
-//     const max = Math.min(maxAnswer, min + answer + 10)
-//     const choices: number[] = []
-//     Array(4)
-//       .fill(0)
-//       .forEach((_, index) => {
-//         if (index === randomIndex) {
-//           choices.push(answer)
-//         } else {
-//           let retries = 0
-//           let randomNumber = 0
-//           do {
-//             randomNumber = generateRandomNumber({
-//               min,
-//               max,
-//               zeroAllowed: true,
-//               maxRetries,
-//             })
-//             retries++
-//             if (!choices.includes(randomNumber) || randomNumber !== answer)
-//               break
-//           } while (retries < maxRetries)
-//           choices.push(randomNumber)
-//         }
-//       })
-
-//     questions.push({
-//       question: numbers,
-//       choices,
-//       answer,
-//     })
-//   }
-//   return questions
-// }

@@ -35,11 +35,13 @@ export const FETCT_TEST_SUMMARY = gql`
       orderBy: { createdAt: ASC }
     ) {
       id
+      type
       createdAt
       updatedAt
-      type
       questions
-      answers
+      answers {
+        value
+      }
     }
   }
 `
@@ -51,7 +53,9 @@ export const FETCH_TEST_BY_ID = gql`
       id
       type
       questions
-      answers
+      answers {
+        value
+      }
       createdAt
       updatedAt
     }
@@ -62,8 +66,8 @@ export const ADD_TEST = gql`
     $type: TestType!
     $createdAt: DateTime!
     $updatedAt: DateTime!
-    $questions: Json
-    $answers: Json
+    $questions: Json!
+    $answers: [TestAnswersCreateInput!]!
   ) {
     createTest(
       data: {
@@ -71,7 +75,7 @@ export const ADD_TEST = gql`
         createdAt: $createdAt
         updatedAt: $updatedAt
         questions: $questions
-        answers: $answers
+        answers: { set: $answers }
       }
     ) {
       id

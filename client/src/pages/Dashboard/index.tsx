@@ -45,18 +45,16 @@ const DashboardPage = () => {
   return (
     <WithLoaderErrorOverlay loading={loading} error={error}>
       <div className="flex-1 space-y-4 ">
-        <div className="flex items-center justify-between space-y-2">
+        <div className="flex flex-col items-center justify-between space-y-2 md:flex-row">
           <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
           <div className="flex items-center space-x-2">
-            <div className="grid gap-2">
-              <DatePickerWithRange
-                fromDate={dateRange.from}
-                toDate={dateRange.to}
-                onDateUpdate={(from, to) => {
-                  setDateRange({ from, to })
-                }}
-              />
-            </div>
+            <DatePickerWithRange
+              fromDate={dateRange.from}
+              toDate={dateRange.to}
+              onDateUpdate={(from, to) => {
+                setDateRange({ from, to })
+              }}
+            />
             {/* <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2">
               Download
             </button> */}

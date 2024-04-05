@@ -220,6 +220,11 @@ const QAView = ({
           {question.map((n, i) => (
             <div key={i} className="font-mono text-3xl md:text-4xl">
               {n}
+              {/* {question
+                .reduce((acc, curr, j) => (j <= i ? acc + curr : acc), 0)
+                .toString()
+                .padStart(3, '0')
+                .padStart(4, '-')} */}
             </div>
           ))}
         </div>
