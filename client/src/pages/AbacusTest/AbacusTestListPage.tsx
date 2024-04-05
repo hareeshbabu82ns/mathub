@@ -44,7 +44,7 @@ const AbacusTestListPage = () => {
 
   return (
     <div className="mt-3 flex flex-1 flex-col rounded-sm border">
-      <div className="flex flex-1 items-center justify-between border-b-2 p-2 px-4">
+      <div className="flex flex-1 flex-col items-center justify-between gap-2 border-b-2 p-2 px-4 md:flex-row">
         <h1 className="text-lg font-extrabold">Abacus</h1>
         <div className="flex items-center gap-2">
           <DatePickerWithRange
