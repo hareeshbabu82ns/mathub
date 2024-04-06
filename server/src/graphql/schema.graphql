@@ -22,3 +22,26 @@ type TestSetting @Model(dataSource: "datasource", key: "TestSettings") {
   type: TestType!
   settings: Json
 }
+type Panchang @Model(dataSource: "panchang", key: "Panchangas") {
+  date: DateTime! @unique
+  ayanamsa: String
+  raasi: String
+  tithi: String
+  tithiStart: DateTime
+  tithiEnd: DateTime
+  vaara: String
+  nakshatra: String
+  nakshatraStart: DateTime
+  nakshatraEnd: DateTime
+  yoga: String
+  yogaStart: DateTime
+  yogaEnd: DateTime
+  karana: String
+  karanaStart: DateTime
+  karanaEnd: DateTime
+  # sunrise: String
+  # sunset: String
+  # moonrise: String
+  # moonset: String
+  # version: String
+}

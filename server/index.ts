@@ -14,6 +14,7 @@ import express, { Express } from "express";
 
 import dotenv from "dotenv";
 import TestQueryPlugin from "./src/test-plugin";
+import PanchangDataSource from "./src/panchang/datasource";
 
 dotenv.config();
 
@@ -41,6 +42,7 @@ const startGraphQLServer = async (expressApp: Express) => {
     sdl,
     dataSources: {
       datasource: (args) => datasource.getDataSource(args.key),
+      panchang: () => new PanchangDataSource(),
     },
     // plugins: [new TestQueryPlugin()],
   });
