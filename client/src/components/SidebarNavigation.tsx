@@ -1,15 +1,16 @@
-import { Link } from "react-aria-components";
-import { CalculatorIcon as AppIcon } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Link } from 'react-aria-components'
+// import { CalculatorIcon as AppIcon } from "lucide-react";
+import { Badge } from '@/components/ui/badge'
 // import { Card } from "@/components/ui/card";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { sidebarNavItems } from "@/pages/Dashboard/nav-items";
-import { useLocation } from "react-router-dom";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/tooltip'
+import { sidebarNavItems } from '@/pages/Dashboard/nav-items'
+import { useLocation } from 'react-router-dom'
+import { cn } from '@/lib/utils'
+import AppIcon from './mathub-app-icon'
 
 export const SidebarCondensedNavigation = () => {
   return (
@@ -19,7 +20,7 @@ export const SidebarCondensedNavigation = () => {
           href="#"
           className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
         >
-          <AppIcon className="h-4 w-4 transition-all group-hover:scale-110" />
+          <AppIcon className="h-6 w-6 stroke-primary-foreground text-primary-foreground" />
           <span className="sr-only">MathHub</span>
         </Link>
         {sidebarNavItems.map(({ path, title, Icon }) => (
@@ -28,10 +29,10 @@ export const SidebarCondensedNavigation = () => {
               <Link
                 href={path}
                 className={cn(
-                  "flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8",
+                  'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8',
                   location.pathname === path
-                    ? "bg-accent text-accent-foreground"
-                    : "",
+                    ? 'bg-accent text-accent-foreground'
+                    : '',
                 )}
               >
                 <Icon className="h-5 w-5" />
@@ -57,14 +58,14 @@ export const SidebarCondensedNavigation = () => {
         </Tooltip>
       </nav> */}
     </aside>
-  );
-};
+  )
+}
 const SidebarNavigation = () => {
   return (
     <div className="flex h-full max-h-screen flex-col gap-2">
       <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
         <Link href="/" className="flex items-center gap-2 font-semibold">
-          <AppIcon className="h-6 w-6 text-primary" />
+          <AppIcon className="h-6 w-6 stroke-primary text-primary" />
           <span className="text-primary">MathHub</span>
         </Link>
         {/* <Button
@@ -83,22 +84,22 @@ const SidebarNavigation = () => {
         <Card className="rounded-none p-2 bg-muted">sidebar footer</Card>
       </div> */}
     </div>
-  );
-};
+  )
+}
 
-export default SidebarNavigation;
+export default SidebarNavigation
 
 export const NavMenuContent = () => {
-  const location = useLocation();
+  const location = useLocation()
   return (
-    <nav className="grid gap-2 md:gap-0 items-start px-2  text-lg md:text-sm font-medium lg:px-4">
+    <nav className="grid items-start gap-2 px-2 text-lg  font-medium md:gap-0 md:text-sm lg:px-4">
       {sidebarNavItems.map(({ path, Icon, title, badge }) => (
         <Link
           key={path}
           href={path}
           className={cn(
-            "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
-            location.pathname === path ? "bg-muted text-primary" : "",
+            'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
+            location.pathname === path ? 'bg-muted text-primary' : '',
           )}
         >
           <Icon className="h-4 w-4" />
@@ -111,5 +112,5 @@ export const NavMenuContent = () => {
         </Link>
       ))}
     </nav>
-  );
-};
+  )
+}
