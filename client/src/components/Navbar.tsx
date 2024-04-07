@@ -1,8 +1,9 @@
-import { Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import SidebarNavigation from "./SidebarNavigation";
-import { ThemeModeToggle } from "./mode-toggle";
+import { Bell as NotifIcon, BellOff as NotifOffIcon, Menu } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import SidebarNavigation from './SidebarNavigation'
+import { ThemeModeToggle } from './mode-toggle'
+import { useNotifications } from '@/hooks/useNotifications'
 
 const Navbar = () => {
   return (
@@ -30,7 +31,8 @@ const Navbar = () => {
           </div>
         </form> */}
       </div>
-      <div>
+      <div className="flex items-center gap-2">
+        <NotificationIcon />
         <ThemeModeToggle />
         {/* <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -50,7 +52,33 @@ const Navbar = () => {
       </DropdownMenu> */}
       </div>
     </header>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar
+
+const NotificationIcon = () => {
+  const { permission, register, unregister } = useNotifications()
+
+  // if (permission === 'granted') return null
+
+  return permission === 'granted' ? (
+    <Button
+      variant="outline"
+      size="icon"
+      className="relative"
+      onClick={unregister}
+    >
+      <NotifOffIcon className="h-5 w-5 text-destructive" />
+    </Button>
+  ) : (
+    <Button
+      variant="outline"
+      size="icon"
+      className="relative"
+      onClick={register}
+    >
+      <NotifIcon className="h-5 w-5 text-primary" />
+    </Button>
+  )
+}

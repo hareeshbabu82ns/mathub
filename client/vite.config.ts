@@ -13,7 +13,13 @@ const vitePWAPlugin = VitePWA({
   registerType: 'autoUpdate',
   devOptions: {
     enabled: true,
+    type: 'module',
+    navigateFallback: 'index.html',
+    // suppressWarnings: true,
   },
+  strategies: 'injectManifest',
+  srcDir: 'src',
+  filename: 'sw.ts',
   includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.png'],
   manifest: {
     name: 'MathHub',

@@ -14,6 +14,10 @@ import express, { Express } from "express";
 
 import dotenv from "dotenv";
 import TestQueryPlugin from "./src/test-plugin";
+// import {
+//   generateSampleNotification,
+//   generateVAPIDKeys,
+// } from "./src/lib/web-push";
 
 dotenv.config();
 
@@ -87,6 +91,8 @@ const startGraphQLServer = async (expressApp: Express) => {
   expressApp.use(cors(options));
 
   const apolloServer = await startGraphQLServer(expressApp);
+  // generateVAPIDKeys();
+  // generateSampleNotification();
 
   // serve UI
   expressApp.use(
