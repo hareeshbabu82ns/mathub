@@ -12,11 +12,13 @@
     "clean": "rimraf ./dist",
     "copyfiles": "copyfiles -u 1 src/**/*.html src/**/*.graphql dist/src/",
     "release": "standard-version",
-    "postrelease": "git push -o ci.skip && git push origin v$npm_package_version"
+    "postrelease": "git push -o ci.skip && git push origin v$npm_package_version",
+    "prisma:gen": "prisma generate"
   },
   "dependencies": {
     "@grapi/mongodb": "^3.0.4",
     "@grapi/server": "^3.0.4",
+    "@prisma/client": "^5.12.1",
     "apollo-server-core": "3.13.0",
     "apollo-server-express": "3.13.0",
     "cors": "^2.8.5",
@@ -31,6 +33,7 @@
     "@types/web-push": "^3.6.3",
     "copyfiles": "^2.4.1",
     "nodemon": "3.1.0",
+    "prisma": "^5.12.1",
     "rimraf": "5.0.5",
     "standard-version": "^9.5.0",
     "ts-node": "10.9.2",

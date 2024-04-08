@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model PushSubscription {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  endpoint String  @unique
+  topic    String? @default("default")
+  data     Json
+}
+
+// type TestSettingsSettings {
+//   id                   String
+//   includingOperations  String[]
+//   isNegativeAllowed    Boolean?
+//   maxCount             Int?
+//   maxDigits            Int?
+//   maxLengthOfDigits    Int?
+//   maxNumber            Int?
+//   maxRetries           Int?
+//   maxSum               Int?
+//   minCount             Int?
+//   minLengthOfDigits    Int?
+//   minSum               Int?
+//   nonNegative          Boolean?
+//   nonReminder          Boolean?
+//   timeLimit            Int
+//   timeLimitPerQuestion Int
+//   totalQuestions       Int
+// }
+
+// type TestsAnswers {
+//   value String
+// }
+
+// type TestsQuestions {
+//   operand1  Int
+//   operand2  Int
+//   operation String
+//   result    Int
+// }
+
+// model TestSettings {
+//   id       String               @id @default(auto()) @map("_id") @db.ObjectId
+//   id_      String               @map("id")
+//   settings TestSettingsSettings
+//   type     String
+// }
+
+// model Tests {
+//   id        String           @id @default(auto()) @map("_id") @db.ObjectId
+//   answers   TestsAnswers[]
+//   createdAt DateTime         @db.Date
+//   id_       String           @map("id")
+//   questions TestsQuestions[]
+//   type      String
+//   updatedAt DateTime         @db.Date
+// }

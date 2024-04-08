@@ -14,6 +14,7 @@ import express, { Express } from "express";
 
 import dotenv from "dotenv";
 import TestQueryPlugin from "./src/test-plugin";
+import routerApi from "./src/routes/api";
 // import {
 //   generateSampleNotification,
 //   generateVAPIDKeys,
@@ -93,6 +94,9 @@ const startGraphQLServer = async (expressApp: Express) => {
   const apolloServer = await startGraphQLServer(expressApp);
   // generateVAPIDKeys();
   // generateSampleNotification();
+
+  // routes
+  expressApp.use("/api", express.json(), routerApi);
 
   // serve UI
   expressApp.use(

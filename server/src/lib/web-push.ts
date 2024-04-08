@@ -1,5 +1,4 @@
 import webpush from "web-push";
-import crypto from "crypto";
 
 export const generateVAPIDKeys = () => {
   const vapidKeys = webpush.generateVAPIDKeys();
@@ -8,6 +7,7 @@ export const generateVAPIDKeys = () => {
   console.log(vapidKeys.privateKey);
   return vapidKeys;
 };
+
 export const generateSampleNotification = () => {
   // raise a push notification with given subscription and payload
   const subscription = {

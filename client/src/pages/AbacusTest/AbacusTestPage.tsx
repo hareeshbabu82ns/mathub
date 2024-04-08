@@ -22,9 +22,11 @@ import useCountDownTimer from '@/hooks/CountDownTimer'
 import { useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis'
+import { useNotifications } from '@/hooks/useNotifications'
 
 const AbacusTestPage = () => {
   const navigate = useNavigate()
+  const { notifyPush } = useNotifications()
 
   const {
     loading: settingsLoading,
@@ -52,8 +54,10 @@ const AbacusTestPage = () => {
       answers: answers.map((value) => ({ value })),
     }
     const data = await createTest({ variables })
+    const testPath = `/abacus/summary/${data.data.createTest.id}`
+    notifyPush('New Abacus Test Created', 'abacus', testPath)
     // console.log(data)
-    navigate(`/abacus/summary/${data.data.createTest.id}`)
+    navigate(testPath)
   }
 
   return (

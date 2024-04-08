@@ -82,9 +82,11 @@ const AbacusTestSummaryGrid = ({
 }) => {
   return (
     <div className="grid grid-cols-2 gap-4 p-4 md:grid-cols-4">
-      {summary.timeSeries.map((item) => (
-        <AbacusTestSummaryGridItem key={item.id} summary={item} />
-      ))}
+      {summary.timeSeries
+        .sort((a, b) => (a.dateShort < b.dateShort ? 1 : -1))
+        .map((item) => (
+          <AbacusTestSummaryGridItem key={item.id} summary={item} />
+        ))}
     </div>
   )
 }
