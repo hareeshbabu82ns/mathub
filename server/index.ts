@@ -97,7 +97,7 @@ const startGraphQLServer = async (expressApp: Express) => {
   // generateSampleNotification();
 
   // routes
-  expressApp.use("/api", express.json(), routerApi);
+  // expressApp.use("/api", express.json(), routerApi);
 
   // serve UI
   expressApp.use(
