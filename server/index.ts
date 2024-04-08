@@ -15,6 +15,7 @@ import express, { Express } from "express";
 import dotenv from "dotenv";
 import TestQueryPlugin from "./src/test-plugin";
 import routerApi from "./src/routes/api";
+import { generateVAPIDKeys } from "./src/lib/web-push";
 // import {
 //   generateSampleNotification,
 //   generateVAPIDKeys,
@@ -92,7 +93,7 @@ const startGraphQLServer = async (expressApp: Express) => {
   expressApp.use(cors(options));
 
   const apolloServer = await startGraphQLServer(expressApp);
-  // generateVAPIDKeys();
+  generateVAPIDKeys();
   // generateSampleNotification();
 
   // routes
