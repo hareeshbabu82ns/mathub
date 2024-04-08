@@ -57,7 +57,7 @@ self.addEventListener('push', function (event) {
     self.registration.showNotification(data.title, {
       body: data.body,
       icon: data.icon,
-      image: data?.image,
+      // image: data?.image,
       data: data?.data,
     }),
   )
