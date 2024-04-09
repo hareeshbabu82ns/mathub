@@ -14,6 +14,7 @@ RUN yarn install
 
 COPY server/ .
 
+RUN yarn prisma generate
 RUN yarn build
 # RUN npm audit fix
 
@@ -42,24 +43,32 @@ ENV APP_SERVER=/home/app/server
 ENV APP_WEB=/home/app/client/build
 ENV DATA_DIR=/data
 
-RUN mkdir $DATA_DIR
+RUN apk add --no-cache openssl
+# RUN apt-get update -y && apt-get install -y openssl
 
-WORKDIR $APP_HOME
-COPY --from=builder /usr/src/app $APP_SERVER
-COPY --from=ui-builder /usr/src/app/dist $APP_WEB
+RUN mkdir $DATA_DIR
 
 EXPOSE 4000
 
-# create the app user
+# create the app user 
+# (alpine)
 RUN addgroup -S app \
   && adduser -S app -G app
-
-# chown all the files to the app user
-RUN chown -R app:app $APP_HOME \
-  && chown -R app:app $DATA_DIR
+# (debian)
+# RUN groupadd -r app && useradd -r -g app app
 
 # change to the app user
 USER app
+
+WORKDIR $APP_HOME
+
+COPY --chown=app:app --from=builder /usr/src/app $APP_SERVER
+COPY --chown=app:app --from=ui-builder /usr/src/app/dist $APP_WEB
+
+# chown all the files to the app user
+# RUN chown -R app:app $APP_HOME \
+#   && chown -R app:app $DATA_DIR
+
 
 WORKDIR $APP_SERVER
 CMD [ "yarn", "start" ]

@@ -85,7 +85,7 @@ const startGraphQLServer = async (expressApp: Express) => {
   // expressApp.options('*', cors)
   const allowedOrigins = [
     "http://localhost:3000",
-    "http://mathub.kube.terabits.io/",
+    "http://mathub.local.terabits.io/",
   ];
   const options: cors.CorsOptions = {
     origin: allowedOrigins,
@@ -93,11 +93,11 @@ const startGraphQLServer = async (expressApp: Express) => {
   expressApp.use(cors(options));
 
   const apolloServer = await startGraphQLServer(expressApp);
-  generateVAPIDKeys();
+  // generateVAPIDKeys();
   // generateSampleNotification();
 
   // routes
-  // expressApp.use("/api", express.json(), routerApi);
+  expressApp.use("/api", express.json(), routerApi);
 
   // serve UI
   expressApp.use(
