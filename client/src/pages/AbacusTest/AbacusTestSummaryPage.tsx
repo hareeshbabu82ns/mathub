@@ -52,7 +52,7 @@ const AbacusTestSummaryView = ({ test }: { test: IAbacusTestData }) => {
 }
 
 const TestSummaryHeader = ({ test }: { test: IAbacusTestData }) => {
-  const [testSummary] = useState(abacusTestSummary(test))
+  const [testSummary] = useState(test.summary || abacusTestSummary(test))
   return (
     <div className="flex items-center justify-between border-b-2 p-2 px-4">
       <div>

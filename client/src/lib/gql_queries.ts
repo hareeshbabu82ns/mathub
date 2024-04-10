@@ -42,6 +42,7 @@ export const FETCT_TEST_SUMMARY = gql`
       answers {
         value
       }
+      summary
     }
   }
 `
@@ -58,9 +59,19 @@ export const FETCH_TEST_BY_ID = gql`
       }
       createdAt
       updatedAt
+      summary
     }
   }
 `
+
+export const UPDATE_TEST_SUMMARY = gql`
+  mutation updateTestSummary($id: ID!, $summary: Json!) {
+    updateTest(where: { id: $id }, data: { summary: $summary }) {
+      id
+    }
+  }
+`
+
 export const ADD_TEST = gql`
   mutation CreateTest(
     $type: TestType!
@@ -68,6 +79,7 @@ export const ADD_TEST = gql`
     $updatedAt: DateTime!
     $questions: Json!
     $answers: [TestAnswersCreateInput!]!
+    $summary: Json!
   ) {
     createTest(
       data: {
@@ -76,6 +88,7 @@ export const ADD_TEST = gql`
         updatedAt: $updatedAt
         questions: $questions
         answers: { set: $answers }
+        summary: $summary
       }
     ) {
       id

@@ -64,8 +64,9 @@ export const useNotifications = (): NotificationState => {
     const registration = await navigator.serviceWorker.ready
     const subscription = await registration.pushManager.getSubscription()
     if (subscription) {
-      await notifySubscribers(content, topic, urlPath)
+      // do something specific to subscription
     }
+    await notifySubscribers(content, topic, urlPath)
   }
 
   return { permission, notification, register, unregister, notifyPush }

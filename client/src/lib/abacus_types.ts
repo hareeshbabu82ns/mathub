@@ -66,6 +66,7 @@ export interface IAbacusTestData {
   updatedAt: string
   questions: IAbacusQuestionData[]
   answers: { value: string }[]
+  summary?: IAbacusTestSummary
 }
 
 export interface IAbacusDailyTestSummary {

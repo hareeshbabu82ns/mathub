@@ -47,7 +47,7 @@ const defaultNotificationData: NotificationData = {
   icon: '/favicon.ico',
 }
 self.addEventListener('push', function (event) {
-  console.log(event.data?.text())
+  // console.log(event.data?.text())
   const data: NotificationData = {
     ...defaultNotificationData,
     ...event.data?.json(),

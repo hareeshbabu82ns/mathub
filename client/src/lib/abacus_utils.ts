@@ -253,7 +253,7 @@ export const abacusTestQuestionSummary = (
   } satisfies IAbacusQuestionSummary
 }
 
-export const abacusTestSummary = (data: IAbacusTestData) => {
+export const abacusTestSummary = (data: Omit<IAbacusTestData, 'summary'>) => {
   const timeTaken = differenceInSeconds(
     new Date(data.updatedAt),
     new Date(data.createdAt),
@@ -302,7 +302,9 @@ export const abacusTestSummary = (data: IAbacusTestData) => {
 export const collectiveSummary = (data: IAbacusTestData[] = []) => {
   const dailySeriesMap = new Map<string, IAbacusDailyTestSummary>()
   const timeSeries = data.map((test) => {
-    const summary = abacusTestSummary(test)
+    const summary = test?.summary
+      ? { ...test.summary, id: test.id }
+      : abacusTestSummary(test)
     // console.log(`collectiveSummary: ${i}: Math.round((100 / ${numOfQs}) * ${diff}) = ${normalizedValue}`)
 
     const dailySummary = dailySeriesMap.get(summary.dateShort)

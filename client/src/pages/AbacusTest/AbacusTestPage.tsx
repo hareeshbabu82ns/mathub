@@ -17,7 +17,7 @@ import {
   PlayCircle as PlayIcon,
   StopCircle as StopIcon,
 } from 'lucide-react'
-import { generateAbacusQuestions } from '@/lib/abacus_utils'
+import { abacusTestSummary, generateAbacusQuestions } from '@/lib/abacus_utils'
 import useCountDownTimer from '@/hooks/CountDownTimer'
 import { useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
@@ -47,12 +47,15 @@ const AbacusTestPage = () => {
   ) => {
     const endTime = new Date()
     const variables = {
+      id: '',
       type: 'ABACUS',
       createdAt: startTime.toISOString(),
       updatedAt: endTime.toISOString(),
       questions: testData,
       answers: answers.map((value) => ({ value })),
+      summary: {},
     }
+    variables.summary = abacusTestSummary(variables)
     const data = await createTest({ variables })
     const testPath = `/abacus/summary/${data.data.createTest.id}`
     notifyPush('New Abacus Test Created', 'default', testPath)
@@ -181,6 +184,7 @@ const AbacusTestView = ({
         timeLimit={settings.timeLimitPerQuestion}
         onSelected={(choice) => {
           const newAnswers = [...answers]
+          console.log(choice)
           newAnswers[questionIndex] = choice.toString()
           setAnswers(newAnswers)
         }}
@@ -238,7 +242,7 @@ const QAView = ({
         className="m-auto grid grid-cols-4 gap-4 p-4"
         type="single"
         value={selectedAnswer ? `${selectedAnswer}` : ''}
-        onValueChange={(v) => onSelected(parseInt(v, 10))}
+        onValueChange={(v) => (v ? onSelected(parseInt(v, 10)) : '')}
         disabled={!!timeLimit && timeLeft <= 0}
       >
         {choices.map((c, i) => (
