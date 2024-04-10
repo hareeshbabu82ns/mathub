@@ -4,11 +4,16 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import SidebarNavigation from './SidebarNavigation'
 import { ThemeModeToggle } from './mode-toggle'
 import { useNotifications } from '@/hooks/useNotifications'
+import { useSidebar } from './sidebar-provider'
 
 const Navbar = () => {
+  const { isSidebarOpen, closeSidebar, openSidebar } = useSidebar()
   return (
     <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
-      <Sheet>
+      <Sheet
+        open={isSidebarOpen}
+        onOpenChange={(open) => (open ? openSidebar() : closeSidebar())}
+      >
         <SheetTrigger asChild>
           <Button variant="outline" size="icon" className="shrink-0 md:hidden">
             <Menu className="h-5 w-5" />

@@ -57,6 +57,7 @@ const AbacusTestListPage = () => {
           <Button
             variant="ghost"
             type="button"
+            size="icon"
             onClick={refetch}
             disabled={loading || !!error?.message}
           >

@@ -1,4 +1,4 @@
-import { Link } from 'react-aria-components'
+// import { Link } from 'react-aria-components'
 // import { CalculatorIcon as AppIcon } from "lucide-react";
 import { Badge } from '@/components/ui/badge'
 // import { Card } from "@/components/ui/card";
@@ -8,16 +8,17 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { sidebarNavItems } from '@/pages/Dashboard/nav-items'
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import AppIcon from './mathub-app-icon'
+import { useSidebar } from './sidebar-provider'
 
 export const SidebarCondensedNavigation = () => {
   return (
     <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
       <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
         <Link
-          href="#"
+          to="#"
           className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
         >
           <AppIcon className="h-6 w-6 stroke-primary-foreground text-primary-foreground" />
@@ -27,7 +28,7 @@ export const SidebarCondensedNavigation = () => {
           <Tooltip key={path}>
             <TooltipTrigger asChild>
               <Link
-                href={path}
+                to={path}
                 className={cn(
                   'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8',
                   location.pathname === path
@@ -64,7 +65,7 @@ const SidebarNavigation = () => {
   return (
     <div className="flex h-full max-h-screen flex-col gap-2">
       <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-        <Link href="/" className="flex items-center gap-2 font-semibold">
+        <Link to="/" className="flex items-center gap-2 font-semibold">
           <AppIcon className="h-6 w-6 stroke-primary text-primary" />
           <span className="text-primary">MathHub</span>
         </Link>
@@ -91,12 +92,14 @@ export default SidebarNavigation
 
 export const NavMenuContent = () => {
   const location = useLocation()
+  const { closeSidebar } = useSidebar()
   return (
     <nav className="grid items-start gap-2 px-2 text-lg  font-medium md:gap-0 md:text-sm lg:px-4">
       {sidebarNavItems.map(({ path, Icon, title, badge }) => (
         <Link
           key={path}
-          href={path}
+          to={path}
+          onClick={closeSidebar}
           className={cn(
             'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
             location.pathname === path ? 'bg-muted text-primary' : '',

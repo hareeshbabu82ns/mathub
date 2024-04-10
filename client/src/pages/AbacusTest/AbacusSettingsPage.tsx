@@ -27,6 +27,12 @@ import WithLoaderErrorOverlay from '@/components/WithLoaderErrorOverlay'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AbacusTestListPage from './AbacusTestListPage'
+import { AccordionContent } from '@radix-ui/react-accordion'
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
 
 // const formSchema = z.object({
 //   username: z
@@ -166,188 +172,200 @@ const SettingsForm = ({
   const { handleSubmit, reset } = formData
 
   return (
-    <Form {...formData}>
-      <form
-        className="grid w-full items-start overflow-auto"
-        onSubmit={handleSubmit(onSubmitForm)}
-      >
-        <div className="rounded-sm border">
-          <div className="flex items-center justify-between border-b-2 p-2 px-4">
-            <h1 className="text-lg font-extrabold">Settings</h1>
-            <div>
-              <Button
-                variant="ghost"
-                type="button"
-                onClick={onRefetch}
-                disabled={!onRefetch}
-              >
-                <RefetchIcon className="h-6 w-6" />
-              </Button>
+    <Accordion type="single" collapsible>
+      <AccordionItem value="form">
+        <Form {...formData}>
+          <form
+            className="grid w-full items-start overflow-auto"
+            onSubmit={handleSubmit(onSubmitForm)}
+          >
+            <div className="rounded-sm border">
+              <div className="flex items-center justify-between border-b-2 p-2 px-4">
+                <h1 className="text-lg font-extrabold">Settings</h1>
+                <div className="flex gap-1">
+                  <Button
+                    variant="ghost"
+                    type="button"
+                    size="icon"
+                    onClick={onRefetch}
+                    disabled={!onRefetch}
+                  >
+                    <RefetchIcon className="h-6 w-6" />
+                  </Button>
+                  <AccordionTrigger></AccordionTrigger>
+                </div>
+              </div>
+              <SettingsFields />
+              <div className="flex flex-row-reverse gap-2 border-t px-4 py-2">
+                <Button variant="outline" type="button" onClick={() => reset()}>
+                  <ResetIcon className="mr-2 h-4 w-4" /> Reset
+                </Button>
+                <Button className="bg-primary">
+                  <StartIcon className="mr-2 h-4 w-4" /> Start Test
+                </Button>
+              </div>
             </div>
-          </div>
-          <SettingsFields />
-          <div className="flex flex-row-reverse gap-2 border-t px-4 py-2">
-            <Button variant="outline" type="button" onClick={() => reset()}>
-              <ResetIcon className="mr-2 h-4 w-4" /> Reset
-            </Button>
-            <Button className="bg-primary">
-              <StartIcon className="mr-2 h-4 w-4" /> Start Test
-            </Button>
-          </div>
-        </div>
-      </form>
-    </Form>
+          </form>
+        </Form>
+      </AccordionItem>
+    </Accordion>
   )
 }
 const SettingsFields = () => {
   const { control } = useFormContext()
   return (
-    <div className="grid grid-cols-1 gap-6 p-4 py-8 md:grid-cols-2 lg:px-8">
-      {/* totalQuestions */}
-      <div className="grid gap-3">
-        <FormField
-          control={control}
-          name="totalQuestions"
-          render={({ field, fieldState: { error } }) => (
-            <FormItem>
-              <FormLabel>Total Questions ({field.value})</FormLabel>
-              <FormControl>
-                <Slider
-                  {...field}
-                  min={10}
-                  step={5}
-                  onValueChange={field.onChange}
-                />
-              </FormControl>
-              <FormDescription>
-                Total Number of Questions in the Test.
-              </FormDescription>
-              <FormMessage>{error?.message}</FormMessage>
-            </FormItem>
-          )}
-        />
+    <AccordionContent>
+      <div className="grid grid-cols-1 gap-6 p-4 py-8 md:grid-cols-2 lg:px-8">
+        {/* totalQuestions */}
+        <div className="grid gap-3">
+          <FormField
+            control={control}
+            name="totalQuestions"
+            render={({ field, fieldState: { error } }) => (
+              <FormItem>
+                <FormLabel>Total Questions ({field.value})</FormLabel>
+                <FormControl>
+                  <Slider
+                    {...field}
+                    min={10}
+                    step={5}
+                    onValueChange={field.onChange}
+                  />
+                </FormControl>
+                <FormDescription>
+                  Total Number of Questions in the Test.
+                </FormDescription>
+                <FormMessage>{error?.message}</FormMessage>
+              </FormItem>
+            )}
+          />
+        </div>
+        {/* numberRange */}
+        <div className="grid gap-3">
+          <FormField
+            control={control}
+            name="numberRange"
+            render={({ field, fieldState: { error } }) => (
+              <FormItem>
+                <FormLabel>Number Range {`[${field.value}]`}</FormLabel>
+                <FormControl>
+                  <Slider
+                    {...field}
+                    min={-50}
+                    step={5}
+                    max={50}
+                    onValueChange={field.onChange}
+                  />
+                </FormControl>
+                <FormDescription>
+                  Range of each Number in a Question.
+                </FormDescription>
+                <FormMessage>{error?.message}</FormMessage>
+              </FormItem>
+            )}
+          />
+        </div>
+        {/* questionLengthRange */}
+        <div className="grid gap-3">
+          <FormField
+            control={control}
+            name="questionLengthRange"
+            render={({ field, fieldState: { error } }) => (
+              <FormItem>
+                <FormLabel>
+                  Question Length Range {`[${field.value}]`}
+                </FormLabel>
+                <FormControl>
+                  <Slider
+                    {...field}
+                    min={2}
+                    step={1}
+                    max={10}
+                    onValueChange={field.onChange}
+                  />
+                </FormControl>
+                <FormDescription>
+                  Total Numbers in each Question.
+                </FormDescription>
+                <FormMessage>{error?.message}</FormMessage>
+              </FormItem>
+            )}
+          />
+        </div>
+        {/* answerRange */}
+        <div className="grid gap-3">
+          <FormField
+            control={control}
+            name="answerRange"
+            render={({ field, fieldState: { error } }) => (
+              <FormItem>
+                <FormLabel>Answer Range {`[${field.value}]`}</FormLabel>
+                <FormControl>
+                  <Slider
+                    {...field}
+                    min={0}
+                    step={5}
+                    max={100}
+                    onValueChange={field.onChange}
+                  />
+                </FormControl>
+                <FormDescription>Answer for each Question.</FormDescription>
+                <FormMessage>{error?.message}</FormMessage>
+              </FormItem>
+            )}
+          />
+        </div>
+        {/* timeLimit */}
+        <div className="grid gap-3">
+          <FormField
+            control={control}
+            name="timeLimit"
+            render={({ field, fieldState: { error } }) => (
+              <FormItem>
+                <FormLabel>Test Duration ({field.value} min)</FormLabel>
+                <FormControl>
+                  <Slider
+                    {...field}
+                    min={8}
+                    step={8}
+                    max={80}
+                    onValueChange={field.onChange}
+                  />
+                </FormControl>
+                <FormDescription>
+                  8min for 100 questions is the base.
+                </FormDescription>
+                <FormMessage>{error?.message}</FormMessage>
+              </FormItem>
+            )}
+          />
+        </div>
+        {/* timeLimitPerQuestion */}
+        <div className="grid gap-3">
+          <FormField
+            control={control}
+            name="timeLimitPerQuestion"
+            render={({ field, fieldState: { error } }) => (
+              <FormItem>
+                <FormLabel>Question Duration ({field.value} sec)</FormLabel>
+                <FormControl>
+                  <Slider
+                    {...field}
+                    min={5}
+                    step={5}
+                    max={50}
+                    onValueChange={field.onChange}
+                  />
+                </FormControl>
+                <FormDescription>
+                  4.8 sec per question is the base.
+                </FormDescription>
+                <FormMessage>{error?.message}</FormMessage>
+              </FormItem>
+            )}
+          />
+        </div>
       </div>
-      {/* numberRange */}
-      <div className="grid gap-3">
-        <FormField
-          control={control}
-          name="numberRange"
-          render={({ field, fieldState: { error } }) => (
-            <FormItem>
-              <FormLabel>Number Range {`[${field.value}]`}</FormLabel>
-              <FormControl>
-                <Slider
-                  {...field}
-                  min={-50}
-                  step={5}
-                  max={50}
-                  onValueChange={field.onChange}
-                />
-              </FormControl>
-              <FormDescription>
-                Range of each Number in a Question.
-              </FormDescription>
-              <FormMessage>{error?.message}</FormMessage>
-            </FormItem>
-          )}
-        />
-      </div>
-      {/* questionLengthRange */}
-      <div className="grid gap-3">
-        <FormField
-          control={control}
-          name="questionLengthRange"
-          render={({ field, fieldState: { error } }) => (
-            <FormItem>
-              <FormLabel>Question Length Range {`[${field.value}]`}</FormLabel>
-              <FormControl>
-                <Slider
-                  {...field}
-                  min={2}
-                  step={1}
-                  max={10}
-                  onValueChange={field.onChange}
-                />
-              </FormControl>
-              <FormDescription>Total Numbers in each Question.</FormDescription>
-              <FormMessage>{error?.message}</FormMessage>
-            </FormItem>
-          )}
-        />
-      </div>
-      {/* answerRange */}
-      <div className="grid gap-3">
-        <FormField
-          control={control}
-          name="answerRange"
-          render={({ field, fieldState: { error } }) => (
-            <FormItem>
-              <FormLabel>Answer Range {`[${field.value}]`}</FormLabel>
-              <FormControl>
-                <Slider
-                  {...field}
-                  min={0}
-                  step={5}
-                  max={100}
-                  onValueChange={field.onChange}
-                />
-              </FormControl>
-              <FormDescription>Answer for each Question.</FormDescription>
-              <FormMessage>{error?.message}</FormMessage>
-            </FormItem>
-          )}
-        />
-      </div>
-      {/* timeLimit */}
-      <div className="grid gap-3">
-        <FormField
-          control={control}
-          name="timeLimit"
-          render={({ field, fieldState: { error } }) => (
-            <FormItem>
-              <FormLabel>Test Duration ({field.value} min)</FormLabel>
-              <FormControl>
-                <Slider
-                  {...field}
-                  min={8}
-                  step={8}
-                  max={80}
-                  onValueChange={field.onChange}
-                />
-              </FormControl>
-              <FormDescription>
-                8min for 100 questions is the base.
-              </FormDescription>
-              <FormMessage>{error?.message}</FormMessage>
-            </FormItem>
-          )}
-        />
-      </div>
-      {/* timeLimitPerQuestion */}
-      <div className="grid gap-3">
-        <FormField
-          control={control}
-          name="timeLimitPerQuestion"
-          render={({ field, fieldState: { error } }) => (
-            <FormItem>
-              <FormLabel>Question Duration ({field.value} sec)</FormLabel>
-              <FormControl>
-                <Slider
-                  {...field}
-                  min={5}
-                  step={5}
-                  max={50}
-                  onValueChange={field.onChange}
-                />
-              </FormControl>
-              <FormDescription>
-                4.8 sec per question is the base.
-              </FormDescription>
-              <FormMessage>{error?.message}</FormMessage>
-            </FormItem>
-          )}
-        />
-      </div>
-    </div>
+    </AccordionContent>
   )
 }

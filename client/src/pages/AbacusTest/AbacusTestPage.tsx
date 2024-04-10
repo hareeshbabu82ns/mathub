@@ -55,7 +55,7 @@ const AbacusTestPage = () => {
     }
     const data = await createTest({ variables })
     const testPath = `/abacus/summary/${data.data.createTest.id}`
-    notifyPush('New Abacus Test Created', 'abacus', testPath)
+    notifyPush('New Abacus Test Created', 'default', testPath)
     // console.log(data)
     navigate(testPath)
   }

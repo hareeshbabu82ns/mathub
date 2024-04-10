@@ -24,3 +24,20 @@
   - `REACT_APP_BASE_URL=https://<render generated url for server>`
 - build command as `npm build`
 - build folder as `build`
+
+### Tag Commit before Pushing
+
+```sh
+git add .
+git commit -m "Your commit message"
+
+# Extract the version from package.json
+VERSION=$(jq -r .version package.json)
+
+# Add a tag to the latest commit
+git tag "v$VERSION"
+
+# Push the tag to the remote repository
+git push origin "v$VERSION"
+# git push origin master --tags
+```
