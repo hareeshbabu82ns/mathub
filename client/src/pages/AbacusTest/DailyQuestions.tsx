@@ -20,7 +20,7 @@ const DailyQuestions = ({ data = [] }: DailyQuestionsProps) => {
     <ResponsiveContainer width="100%" height="100%">
       <ComposedChart data={data}>
         <XAxis dataKey="dateShort" padding={{ left: 15, right: 30 }} />
-        <YAxis name="" />
+        <YAxis name="" padding={{ top: 30, bottom: 15 }} />
         <Tooltip />
         <Legend />
 

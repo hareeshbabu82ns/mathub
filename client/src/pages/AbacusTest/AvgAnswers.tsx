@@ -10,37 +10,38 @@ import {
 } from 'recharts'
 import colors from 'tailwindcss/colors'
 
-interface AvgQuestionsProps {
+interface AvgAnswersProps {
   data: IAbacusTestSummary[]
 }
 
-const AvgQuestions = ({ data = [] }: AvgQuestionsProps) => {
+const AvgAnswers = ({ data = [] }: AvgAnswersProps) => {
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <LineChart
-        data={data.map((d) => ({
-          dateShort: d.dateShort,
-          targegetQs: 100,
-          currentQs: Math.round((d.totalQuestions / d.timeTaken) * 8 * 60),
-        }))}
-      >
+      <LineChart data={data}>
         <XAxis dataKey="dateShort" padding={{ left: 15, right: 30 }} />
-        <YAxis name="Total Questions" padding={{ top: 30, bottom: 15 }} />
+        <YAxis name="" padding={{ top: 30, bottom: 15 }} />
         <Tooltip />
         <Legend />
 
         <Line
           type="monotone"
-          dataKey="targegetQs"
-          name="Target Questions"
+          dataKey="avgWrongAnswers"
+          name="Wrong Answers"
+          stroke={colors.amber[800]}
+          strokeWidth={2}
+        />
+        <Line
+          type="monotone"
+          dataKey="avgCorrectAnswers"
+          name="Correct Answers"
           stroke={colors.green[800]}
           strokeWidth={2}
         />
         <Line
           type="monotone"
-          dataKey="currentQs"
-          name="Current Questions"
-          stroke={colors.amber[800]}
+          dataKey="avgSkippedAnswers"
+          name="Skipped Answers"
+          stroke={colors.zinc[700]}
           strokeWidth={2}
         />
       </LineChart>
@@ -48,4 +49,4 @@ const AvgQuestions = ({ data = [] }: AvgQuestionsProps) => {
   )
 }
 
-export default AvgQuestions
+export default AvgAnswers

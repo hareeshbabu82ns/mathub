@@ -5,6 +5,7 @@ import { useQuery } from '@apollo/client'
 import { subDays } from 'date-fns'
 import { useEffect, useState } from 'react'
 import AvgTimes from '../AbacusTest/AvgTimes'
+import AvgAnswers from '../AbacusTest/AvgAnswers'
 import AvgQuestions from '../AbacusTest/AvgQuestions'
 import DailyQuestions from '../AbacusTest/DailyQuestions'
 import { DatePickerWithRange } from './DateRangePicker'
@@ -75,11 +76,21 @@ const DashboardPage = () => {
             <div className="col-span-4 rounded-xl border bg-card text-card-foreground shadow">
               <div className="flex flex-col space-y-1.5 p-6">
                 <h3 className="font-semibold leading-none tracking-tight">
-                  Average Answers
+                  Questions per 8 minutes
                 </h3>
               </div>
               <div className="h-96 w-full">
                 <AvgQuestions data={testSummary.timeSeries} />
+              </div>
+            </div>
+            <div className="col-span-4 rounded-xl border bg-card text-card-foreground shadow">
+              <div className="flex flex-col space-y-1.5 p-6">
+                <h3 className="font-semibold leading-none tracking-tight">
+                  Average Answers
+                </h3>
+              </div>
+              <div className="h-96 w-full">
+                <AvgAnswers data={testSummary.timeSeries} />
               </div>
             </div>
             <div className="col-span-4 rounded-xl border bg-card text-card-foreground shadow">

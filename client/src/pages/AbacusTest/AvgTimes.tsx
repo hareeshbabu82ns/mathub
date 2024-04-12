@@ -19,7 +19,7 @@ const AvgTimes = ({ data = [] }: AvgTimesProps) => {
     <ResponsiveContainer width="100%" height="100%">
       <LineChart data={data}>
         <XAxis dataKey="dateShort" padding={{ left: 15, right: 30 }} />
-        <YAxis name="Time (in Sec)" />
+        <YAxis name="Time (in Sec)" padding={{ top: 30, bottom: 15 }} />
         <Tooltip />
         <Legend />
         <Line
