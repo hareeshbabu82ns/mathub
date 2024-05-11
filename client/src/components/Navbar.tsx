@@ -2,9 +2,10 @@ import { Bell as NotifIcon, BellOff as NotifOffIcon, Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import SidebarNavigation from './SidebarNavigation'
-import { ThemeModeToggle } from './mode-toggle'
+// import { ThemeModeToggle } from './mode-toggle'
 import { useNotifications } from '@/hooks/useNotifications'
 import { useSidebar } from './sidebar-provider'
+import QuickSettingsTrigger from '@/pages/settings/QuickSettingsTrigger'
 
 const Navbar = () => {
   const { isSidebarOpen, closeSidebar, openSidebar } = useSidebar()
@@ -38,23 +39,8 @@ const Navbar = () => {
       </div>
       <div className="flex items-center gap-2">
         <NotificationIcon />
-        <ThemeModeToggle />
-        {/* <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="secondary" size="icon" className="rounded-full">
-            <CircleUser className="h-5 w-5" />
-            <span className="sr-only">Toggle user menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Settings</DropdownMenuItem>
-          <DropdownMenuItem>Support</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Logout</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu> */}
+        {/* <ThemeModeToggle /> */}
+        <QuickSettingsTrigger />
       </div>
     </header>
   )

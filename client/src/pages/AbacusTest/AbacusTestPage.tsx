@@ -23,6 +23,11 @@ import { useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis'
 import { useNotifications } from '@/hooks/useNotifications'
+import {
+  VOICE_SPEED_DEFAULT,
+  VOICE_SPEED_KEY,
+} from '@/components/blocks/voice-speed-selector'
+import { useReadLocalStorage } from 'usehooks-ts'
 
 const AbacusTestPage = () => {
   const navigate = useNavigate()
@@ -184,7 +189,7 @@ const AbacusTestView = ({
         timeLimit={settings.timeLimitPerQuestion}
         onSelected={(choice) => {
           const newAnswers = [...answers]
-          console.log(choice)
+          // console.log(choice)
           newAnswers[questionIndex] = choice.toString()
           setAnswers(newAnswers)
         }}
@@ -210,12 +215,15 @@ const QAView = ({
   onSelected: (choice: number) => void
   className?: string
 }) => {
+  const voiceSpeed = Number(
+    useReadLocalStorage<string>(VOICE_SPEED_KEY) || VOICE_SPEED_DEFAULT,
+  )
   const { speak } = useSpeechSynthesis()
   const [timeLeft] = useCountDownTimer(timeLimit || 0)
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      speak(question.join('. '))
+      speak(question.join('. '), voiceSpeed)
     }, 500) // Wait for 0.5 seconds before starting
     return () => clearTimeout(timer)
     // eslint-disable-next-line react-hooks/exhaustive-deps

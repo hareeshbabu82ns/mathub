@@ -3,7 +3,7 @@ import React, { useState, useEffect, createContext, useContext } from 'react'
 export type SpeechSynthesisStatus = 'paused' | 'speaking' | 'stopped'
 
 type SpeechSynthesisState = {
-  speak: (text: string) => void
+  speak: (text: string, speed?: number) => void
   stop: () => void
   pause: () => void
   resume: () => void
@@ -39,10 +39,11 @@ export function SpeechSynthesisProvider({
     }
   }, [])
 
-  const speak = (text: string) => {
+  const speak = (text: string, speed?: number) => {
     if (utterance) {
       window.speechSynthesis.cancel()
       utterance.text = text
+      utterance.rate = speed ?? 0.6
       window.speechSynthesis.speak(utterance)
       setStatus('speaking')
     }

@@ -5,6 +5,8 @@ import EmptyPageContent from './components/EmptyPageContent'
 import AbacusSettingsPage from './pages/AbacusTest/AbacusSettingsPage'
 import AbacusTestPage from './pages/AbacusTest/AbacusTestPage'
 import AbacusTestSummaryPage from './pages/AbacusTest/AbacusTestSummaryPage'
+import SettingsPage from './pages/settings'
+import GeneralSettings from './pages/settings/GeneralSettings'
 
 function App() {
   return (
@@ -22,6 +24,9 @@ function App() {
             <Route path="summary/:id" element={<AbacusTestSummaryPage />} />
             <Route index element={<AbacusSettingsPage />} />
           </Route>
+        </Route>
+        <Route path="settings" element={<SettingsPage />}>
+          <Route index element={<GeneralSettings />} />
         </Route>
         <Route path="*" element={<EmptyPageContent />} />
       </Route>
